@@ -3,8 +3,8 @@
 {% block main %}
 
     <div>
-        <form method="POST" action="">
-            {% csrf_exempt %}
+        <form method="POST" action="{% url 'create_decision' %}">
+            {% csrf_token %}
             {{form}}
             <!-- {{form.as_p}} -->
 
