@@ -95,6 +95,8 @@ DATABASES = {
 
 CSRF_COOKIE_SECURE = True
 
+CSRF_COOKIE_HTTPONLY = True
+
 CSRF_TRUSTED_ORIGINS = [
     'https://django-server-production-904d.up.railway.app',
     # Add other trusted origins if needed
