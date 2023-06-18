@@ -1,7 +1,5 @@
 {% load static %}
 
-{% load compress %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,17 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/suspense_timer.css' %}">
-    <script src="https://cdn.tailwindcss.com"></script>
+    {% include 'head/css.html' %}
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap"
       rel="stylesheet"
     />
-
-      {% compress css %}
-        <link rel="stylesheet" href="{% static 'src/output.css' %}">
-      {% endcompress %}
 
     <title>Clusera</title>
     <style>
