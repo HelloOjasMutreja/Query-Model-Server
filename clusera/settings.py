@@ -95,11 +95,11 @@ WSGI_APPLICATION = 'clusera.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ["railway"],
-        'USER': os.environ["postgres"],
-        'PASSWORD': os.environ["38uo19k9Pb3Zjwx7Cq0V"],
-        'HOST': os.environ["containers-us-west-75.railway.app"],
-        'PORT': os.environ["7182"],
+        'NAME': 'railway',
+        'USER': 'postgres',
+        'PASSWORD': os.environ['38uo19k9Pb3Zjwx7Cq0V'],
+        'HOST': 'containers-us-west-75.railway.app',
+        'PORT': '7182',
     }
 }
 
