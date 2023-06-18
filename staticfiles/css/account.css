@@ -1,0 +1,21 @@
+body {
+  background: rgb(255, 255, 255);
+  background-size: cover;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  font-family: "Satoshi Variable";
+}
+
+.container-box {
+  background-color: white;
+  overflow: hidden;
+}
+
+input {
+  outline: none;
+}
+
+.checkbox {
+  transform: scale(1.5);
+  accent-color: black;
+}

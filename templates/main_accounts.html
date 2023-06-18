@@ -2,8 +2,6 @@
 
 {% load static %}
 
-{% load compress %}
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -20,10 +18,6 @@
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap"
       rel="stylesheet"
     />
-
-    {% compress css %}
-    <link rel="stylesheet" href="{% static 'src/output.css' %}">
-    {% endcompress %}
   </head>
   <body class="flex justify-center items-center h-screen">
     
