@@ -1,0 +1,103 @@
+{% extends "main_accounts.html" %}
+
+{% load static %}
+
+{% load compress %}
+
+{% load i18n %}
+
+{% load account socialaccount %}
+
+{% get_providers as socialaccount_providers %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+  <div
+    class="container-box w-full h-full p-[1vh]"
+  >
+    <div
+      class="grid grid-rows-6 lg:grid-rows-1 lg:grid-cols-2 w-full h-full"
+    >
+      <div
+        class="font-medium flex lg:flex-col gap-10 justify-center items-center row-span-1 lg:row-span-6"
+      >
+      
+        <div class="sign-up text-4xl lg:text-9xl">{% trans "Login" %}</div>
+        <div
+          class="log-in text-[2.25rem] lg:text-8xl p-2 lg:p-0 text-neutral-500"
+        >
+          <a href="{{ signup_url }}">Sign Up</a>        
+        </div>
+      </div>
+      <div
+        class="grid grid-rows-5 row-span-5 text-center m-[3%] lg:m-[7%] form"
+      >
+        {% include "socialaccount/snippets/login_extra.html" %}
+        <form class="row-span-2 login grid grid-rows-3 py-2 gap-2 bg-black rounded-[3vh]" id="signup_form" method="post" action="{% url 'account_login' %}">
+          {% csrf_token %}
+
+          {% for field in form %}
+            {% if field.name != 'remember' %}
+            <input 
+              class="mx-2 pl-4 rounded-[2vh] bg-white font-medium text-xl placeholder-black"
+              type="{{ field.field.widget.input_type }}"
+              name="{{ field.name }}"
+              id="id_{{ field.name }}"
+              placeholder="{{ field.label }}"
+              {% if field.field.required %}required{% endif %}
+              {% if field.value %}value="{{ field.value }}"{% endif %}>
+            {% endif %}
+          {% endfor %}
+          
+          <input type="hidden" name="{{ form.remember.name }}" value="on">
+          {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+          <button 
+            type="submit"              
+            class="mx-2 pl-4 rounded-[2vh] flex items-center bg-amber-400 font-medium text-2xl text-black">
+            {% trans "Sign In" %}
+          </button>
+        </form>
+        
+        <div class="row-span-2 grid grid-rows-3">
+          <div
+            class="or text-xl font-bold p-4 flex items-center justify-center"
+          >
+            OR
+          </div>        
+          <div 
+          class="socialaccount_ballot google bg-black rounded-[3vh] flex items-center p-2"
+          >
+          <div class="bg-white rounded-[2vh] h-full aspect-square flex items-center justify-center">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="" class="h-[5vh] lg:h-[7vh]" />
+          </div>
+          <div class="text-xl flex-1 lg:text-2xl flex items-center text-white col-span-5 lg:col-span-6 text-left font-medium ml-4">
+            <ul class="socialaccount_providers">
+              {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+            </ul>
+          </div>
+          </div>
+          <div class="last-row grid grid-cols-2 text-base lg:text-xl">
+            <div class="remember-me font-bold flex items-end justify-start">
+                <label class="form-check-label" for="remember">{% trans "Remember Me" %}</label>
+                <input
+                  type="checkbox"
+                  id="remember" 
+                  checked
+                  name="remember" 
+                  {% if form.remember.value %}checked{% endif %}
+                  class="m-2 rounded-[2vh] checkbox"
+                />
+            </div>
+            <div class="font-bold flex items-end justify-end">
+              <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+{% endblock %}

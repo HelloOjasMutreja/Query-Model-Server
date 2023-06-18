@@ -1,0 +1,88 @@
+{% extends 'main.html' %}
+
+{% block main %}
+
+<form method="POST" action="">
+  <div class="flex w-full h-full flex-col">
+    <div class="space-y-[6vh] w-full mt-[25vh] flex-1">
+      <div class="text-lg sm:text-2xl text-center text-white"
+      >
+        What is your decision all about?
+      </div>
+      <div class="w-full flex justify-center">
+        <div class="flex-1 max-w-[80vw]">
+            
+          {% csrf_token %}
+          <input
+            type="text"
+            name="title"
+            maxlength="50"
+            required_id="id_title"
+            class="text-3xl lg:text-6xl rounded-[3vh] lg:rounded-[4vh] w-full bg-black border-neutral-400 focus:border-white outline-none p-5 sm:p-10 border-4 font-black text-white"
+            value="{{ form.initial.title }}"
+          />
+          
+        </div>
+      </div>
+    </div>
+
+    <h3>Options:</h3>
+    {% for option in decision.option_set.all %}
+      <div>
+        <input type="checkbox" name="preferred_option" value="{{ option.id }}" {% if option.is_preferred %}checked{% endif %}>
+        <label class="text-white">{{ option.content }}</label>
+      </div>
+    {% endfor %}
+
+    <h4 class="text-white">Situation:</h4>
+    <textarea id="id_situation" name="situation" rows="4" cols="50"  class="bg-gray-800 text-white rounded-md p-2 mb-4">{{ decision.situation }}</textarea>
+
+    <label class="text-white">Categories:</label>
+    {% for category in form.categories %}
+      <div class="text-white">
+        {{ category.tag }}
+        {{ category.choice_label }}
+      </div>
+    {% endfor %}
+
+    <div
+      class="text-white flex justify-center my-[10vh] flex flex-row gap-4"
+    >
+      <a href="{% url 'home' %}">
+        <div
+          class="bg-neutral-800 flex justify-center items-center text-white rounded-[3vh] h-[12vh] aspect-square cancel-button"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="w-[50%] max-w-[5vw] stroke-1 stroke-white"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+      </a>
+      <button type="submit"
+        class="bg-neutral-800 flex justify-center items-center text-white rounded-[3vh] h-[12vh] aspect-square save-button"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="w-[50%] max-w-[5vw] stroke-1 stroke-white"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</form>
+{% endblock main %}

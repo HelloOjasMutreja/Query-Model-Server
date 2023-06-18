@@ -1,0 +1,56 @@
+
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load compress %}
+
+{% block main %}
+
+  <div class="flex w-full h-full gap-[5vh] p-[6vh]">
+    {% include 'navbar.html' %}
+    <div class="flex flex-col h-full w-full gap-[4vh]">
+      <div class="h-[67vh] w-full">
+        
+        {% if decisions %}
+        <div
+          class="flex flex-col h-full w-full gap-[7vh] items-center overflow-y-scroll">
+
+          {% for decision in decisions %}
+            <a href="{% url 'public-decision' decision.id %}">
+              <div
+                class="post flex flex-col w-[55vw] min-h-[30vh] rounded-[4vh] p-[5vh]">
+                <div class="flex-1 text-white font-medium text-[2.85rem]">
+                  {{decision.title|truncatechars:35}}
+                </div>
+                <div class="flex gap-[2vw] text-white">
+                  {% for tag in decision.tags.all %}
+                  <div
+                    class="tag px-[1.8vw] py-[0.75vh] text-xl font-medium rounded-full">
+                    {{tag.name|title}}
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+
+        </div>
+        {% else %}
+          <p class="text-white">No decisions</p>
+        {% endif %}
+
+      </div>
+
+      <div class="basis-1/6 flex items-center mr-[1vw]">
+        <a href="{% url 'create-public-decision' %}" class="w-full h-full flex justify-center">
+          <div
+            class="new-decision-button w-[55vw] h-full rounded-[3vh] flex items-center p-[2vw]">
+            <div class="text-3xl">Ask for some help out there...</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  
+{% endblock main %}

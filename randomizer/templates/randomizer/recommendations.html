@@ -1,0 +1,17 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load compress %}
+
+{% block main %}
+
+<h1 class="text-white">Recommended Decisions</h1>
+<br>
+  <ul>
+    {% for decision in recommended_decisions %}
+      <li class="text-white">{{ decision }}</li>
+    {% endfor %}
+  </ul>
+
+{% endblock main %}

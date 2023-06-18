@@ -1,0 +1,62 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load compress %}
+
+{% block main %}
+
+<h1 class="text-3xl mb-4 text-white">{{ decision.title }}</h1>
+
+<!-- Display the options -->
+<ul>
+    {% for option in options %}
+    <li class="mb-2">
+        <span class="inline-block text-white">{{ option.content }}</span>
+        <a href="{% url 'filter_option' pk=decision.id option_id=option.id %}"
+            class="text-blue-500 ml-2">Filter</a>
+    </li>
+    {% endfor %}
+</ul>
+
+<!-- Display selected option messages, pros, and cons -->
+{% if option %}
+<h2 class="text-2xl mt-8 mb-4 text-white">Selected Option: {{ option.content }}</h2>
+
+<h3 class="text-xl mb-2 text-white">Messages:</h3>
+<ul>
+    {% for message in messages %}
+    <li class="mb-1 text-white">{{ message.message }}</li>
+    {% endfor %}
+</ul>
+
+<h3 class="text-xl mt-4 mb-2 text-white">Pros:</h3>
+<ul>
+    {% for pro in pros %}
+    <li class="mb-1 text-white">{{ pro }}</li>
+    {% endfor %}
+</ul>
+
+<h3 class="text-xl mt-4 mb-2 text-white">Cons:</h3>
+<ul>
+    {% for con in cons %}
+    <li class="mb-1 text-white">{{ con }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<!-- Voting form -->
+<form method="POST" action="{% url 'vote_option' pk=decision.id %}">
+  {% csrf_token %}
+  <select name="option">
+    {% for option in options %}
+      <option value="{{ option.id }}">{{ option.content }}</option>
+    {% endfor %}
+  </select>
+  <input type="text" name="message" placeholder="Message">
+  <input type="text" name="pros" placeholder="Pros">
+  <input type="text" name="cons" placeholder="Cons">
+  <button type="submit">Vote</button>
+</form>
+
+{% endblock main %}

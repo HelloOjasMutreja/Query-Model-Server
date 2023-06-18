@@ -1,0 +1,33 @@
+.loading {
+    overflow: hidden;
+}
+
+.loading .loader {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+.loading .loader:after {
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    width: 8em;
+    height: 8em;
+    margin: 8px;
+    border: 6px solid #ffffff;
+    border-color: #ffffff transparent #ffffff transparent;
+    animation: loading-spinner 1.2s linear infinite;
+}
+
+@keyframes loading-spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

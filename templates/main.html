@@ -1,15 +1,60 @@
+{% load static %}
+
+{% load compress %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/suspense_timer.css' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap"
+      rel="stylesheet"
+    />
+
+      {% compress css %}
+        <link rel="stylesheet" href="{% static 'src/output.css' %}">
+      {% endcompress %}
+
     <title>Clusera</title>
+    <style>
+      .page-transition {
+        opacity: 0;
+        transition: opacity 0.135s ease-in-out, background-color 0.15s ease-in-out;
+        background-color: black;
+      }
+
+      .page-transition.active {
+        opacity: 1;
+        background-color: black;
+      }
+    </style>
 </head>
-<body>
+<body  class="flex justify-center items-center h-screen">
 
-    {% block main %}
-    {% endblock main %}
+  <div class="loader"></div>
 
+  <div class="page-transition container-box w-full h-full" >
+
+    {% include 'messages.html' %}
+
+    {% include 'randomizer/loading.html' %}
+
+    <div class="container-box w-full h-full p-[2vh]">
+      {% block main %}
+
+      {% endblock main %}
+    </div>
+
+  </div>
+  
+  <script src="{% static 'js/script.js' %}"></script>
+  
 </body>
 </html>

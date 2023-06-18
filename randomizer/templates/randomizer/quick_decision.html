@@ -1,0 +1,418 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load compress %}
+
+{% block main %}
+
+<style>
+
+::selection{
+  background-color: {{ decision.image_set.color5 }};
+  color: {{ decision.image_set.color6 }};
+}
+
+.container-box {
+  background-color: black;
+  overflow: hidden;
+}
+
+.column-box {
+  background-image: url("{% static decision.image_set.image %}");
+  background-size: cover;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
+}
+
+.option::placeholder {
+  color: {{ decision.image_set.color1 }};
+}  
+</style>
+
+  <div
+    class="grid grid-cols-1 grid-rows-5 lg:grid-rows-3 lg:grid-cols-3 w-full h-full gap-[1.25vh]"
+  >
+    <a href="{% url 'home' %}" class="place-self-start z-10 absolute m-[1.5vw]">
+      <div
+        class="text-lg max-w-[5vw] uppercase text-white font-medium"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="white"
+          class="w-[7vh] m-2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15.75 19.5L8.25 12l7.5-7.5"
+          />
+        </svg>
+      </div>
+    </a>
+    <div
+      class="column-box flex items-center justify-center lg:justify-start text-4xl lg:text-6xl font-bold text-white rounded-[3vh] lg:rounded-[4vh] row-span-2 lg:row-span-3"
+    >
+      <div
+        class="column-text flex leading-tight lg:text-left text-center px-[12%] items-center"
+      >
+        {{decision.title}}
+      </div>
+      {% if request.user == decision.user %}
+        {% if decision.is_quick_decision == True %}
+          <a href="{% url 'update-quick-decision' decision.id %}">
+            <div
+              class="edit-button flex justify-center items-center place-self-end z-10 absolute rounded-[3vh] m-4 h-[9vh] bottom-0 right-0 aspect-square"
+              style="background-color: {{ decision.image_set.color3 }};
+              color: {{ decision.image_set.color4 }};"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="w-[40%] max-w-[5vw]"
+              >
+                <path
+                  d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"
+                />
+              </svg>
+            </div>
+          </a>
+        {% elif decision.is_public_decision == True %}  
+          <a href="{% url 'update-public-decision' decision.id %}">
+            <div
+              class="edit-button flex justify-center items-center place-self-end z-10 absolute rounded-[3vh] m-4 h-[9vh] bottom-0 right-0 aspect-square"
+              style="background-color: {{ decision.image_set.color3 }};
+              color: {{ decision.image_set.color4 }};"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="w-[40%] max-w-[5vw]"
+              >
+                <path
+                  d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32L19.513 8.2z"
+                />
+              </svg>
+            </div>
+          </a>
+        {% endif %}
+        
+        <a href="#" class="place-self-end z-10 absolute">
+          <div
+            class="settings-button hidden lg:flex justify-center items-center rounded-[3vh] m-4 h-[9vh] aspect-square"
+            style="background-color: {{ decision.image_set.color3 }};
+            color: {{ decision.image_set.color4 }};"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-[45%] max-w-[5vw]"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+            </svg>
+          </div>
+        </a>
+      {% endif %}
+    </div>
+
+      <div
+        class="options gap-[1vh] lg:gap-[6px] grid grid-rows-4 row-span-2 lg:row-span-2"
+      >        
+        {% for option in options %}
+          <div
+            class="option lg:pb-[3.5%] pl-[4.5%] rounded-[3vh] lg:rounded-[4vh] flex items-center lg:items-end font-semibold text-xl lg:text-[1.3rem]"
+            style="background-color: {{ decision.image_set.color3 }};"
+          >
+            <div class="flex-1" style="color: {{ decision.image_set.color4 }};">{{ option.content }}</div>
+            <div class="self-center w-[8%] lg:pt-[4.5%] mr-[4.5%]" style="color: {{ decision.image_set.color4 }};">
+              <a href="{% url 'delete-option' option.id %}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-[40%] lg:h-[50%] max-h-[8vh] delete">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+
+        {% if options.count < 4 %}
+          <div class="option overflow-hidden lg:pb-[3.5%] pl-[4.5%] rounded-[3vh] lg:rounded-[4vh] flex items-center lg:items-end font-semibold text-xl lg:text-2xl border-4"
+            style="border-color: {{ decision.image_set.color4 }};
+            background-color: {{ decision.image_set.color3 }};"
+          >
+            <form method="POST" class="w-full h-full flex items-center lg:items-end" style="background-color: {{ decision.image_set.color3 }};">
+              {% csrf_token %}
+              <input
+                type="text"
+                name="content"
+                class="option pl-0 flex items-center lg:items-end font-semibold text-xl lg:text-2xl outline-none"
+                placeholder="Add option"
+                id="new-option-input"
+                style="background-color: {{ decision.image_set.color3 }};
+                color: {{ decision.image_set.color4 }};"
+              />
+            </form>
+          </div>
+        {% endif %}
+      </div>
+
+    {% if request.user == decision.user %}
+      <div class="hidden lg:grid">
+        {% if not decision.is_daily_decision %}
+          <form method="POST" action="{% url 'set-daily-decision' pk=decision.id %}" class="w-full h-full">
+            {% csrf_token %}
+            <button type="submit" class="text-left w-full h-full">
+              <div
+                class="daily-decisions w-full h-full hidden lg:flex lg:pb-[4.5%] lg:pl-[5.5%] rounded-[4vh] items-end text-xl font-bold text-white"
+                style="background-color: {{ decision.image_set.color1 }};"
+              >
+                <div class="flex-1">
+                  <p>Save this as a daily decision</p>
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="self-start place-self-end svg"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+                  />
+                </svg>
+              </div>
+            </button>
+          </form>          
+        {% else %}
+          <a href="{% url 'daily-decisions' %}">
+            <div
+              class="daily-decisions w-full h-full hidden lg:flex lg:pb-[4.5%] lg:pl-[5.5%] rounded-[4vh] items-end text-xl font-bold text-white"
+              style="background-color: {{ decision.image_set.color1 }};"
+            >
+              <div class="flex-1">
+                <p>Go to <br>daily decisions</p>
+              </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="self-start place-self-end svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 003 3h15a3 3 0 01-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125zM12 9.75a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H12zm-.75-2.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H12a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5H6zm-.75 3.75a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75zM6 6.75a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 00.75-.75v-3A.75.75 0 009 6.75H6z"
+                  clip-rule="evenodd"
+                />
+                <path
+                  d="M18.75 6.75h1.875c.621 0 1.125.504 1.125 1.125V18a1.5 1.5 0 01-3 0V6.75z"
+                />
+              </svg>
+            </div>
+          </a>
+        {% endif %}
+      </div>
+    {% else %}
+      <a href="{% url 'login' %}">
+        <div
+          class="daily-decisions w-full h-full hidden lg:flex lg:pb-[4.5%] lg:pl-[5.5%] rounded-[4vh] items-end text-xl font-bold text-white"
+          style="background-color: {{ decision.image_set.color1 }};"
+        >
+          <div class="flex-1">
+            <p>Login <br>to access daily decisions</p>
+          </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="self-start place-self-end svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.125 3C3.089 3 2.25 3.84 2.25 4.875V18a3 3 0 003 3h15a3 3 0 01-3-3V4.875C17.25 3.839 16.41 3 15.375 3H4.125zM12 9.75a.75.75 0 000 1.5h1.5a.75.75 0 000-1.5H12zm-.75-2.25a.75.75 0 01.75-.75h1.5a.75.75 0 010 1.5H12a.75.75 0 01-.75-.75zM6 12.75a.75.75 0 000 1.5h7.5a.75.75 0 000-1.5H6zm-.75 3.75a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5H6a.75.75 0 01-.75-.75zM6 6.75a.75.75 0 00-.75.75v3c0 .414.336.75.75.75h3a.75.75 0 00.75-.75v-3A.75.75 0 009 6.75H6z"
+              clip-rule="evenodd"
+            />
+            <path
+              d="M18.75 6.75h1.875c.621 0 1.125.504 1.125 1.125V18a1.5 1.5 0 01-3 0V6.75z"
+            />
+          </svg>
+        </div>
+      </a>
+    {% endif %}
+    <a href="{% url 'create-quick-decision' %}" class=" hidden lg:flex row-span-1 w-full h-full"
+    >
+      <div
+        class="another-decision hidden lg:flex rounded-[4vh] w-full h-full lg:pb-[4.5%] lg:pl-[5.5%] items-end text-xl font-bold text-white"
+        style="background-color: {{ decision.image_set.color1 }};"
+      >
+        <div class="flex-1">
+          <p>Take another<br>decision</p>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="self-start place-self-end svg"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 6v12m6-6H6"
+          />
+        </svg>
+      </div>
+    </a>
+      <div
+        class="grid grid-rows-5 lg:grid-rows-none lg:col-span-2 gap-[1.25vh]"
+      >
+        {% if options %}
+        <a href="{% url 'random-option' pk=decision.id %}" class=" row-span-3 lg:row-span-1">
+          <div
+            class="choose-option w-full h-full p-0 lg:pb-[3.5%] lg:pl-[4.5%] flex items-center rounded-[3vh] lg:rounded-[4vh] justify-center lg:items-end font-bold text-white buttons" 
+            style="background-color: {{ decision.image_set.color2 }};"
+          >
+            <div class="flex-1 text-center lg:text-left">
+              <div class="flex-1 text-center text-xl lg:text-4xl lg:text-left">
+                <p>Choose an option</p>
+              </div>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="4"
+              stroke="currentColor"
+              class="hidden lg:block self-start place-self-end svg"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
+              />
+            </svg>
+          </div>
+        </a>
+        {% else %}
+          <div
+            class="choose-option p-0 lg:pb-[3.5%] lg:pl-[4.5%] flex items-center rounded-[3vh] lg:rounded-[4vh] justify-center lg:items-end row-span-3 lg:row-span-1 text-xl md:text-4xl font-bold text-white buttons"
+            style="background-color: {{ decision.image_set.color2 }};"
+          >
+            <div class="flex-1 text-center lg:text-left">
+              <p>Please enter options</p>
+            </div>
+          </div>
+        {% endif %}
+        <div
+          class="buttons-navbar lg:hidden flex place-items-stretch row-span-2 gap-[1.25vh]"
+        >
+          <div
+            class="save-decision flex flex-1 items-center justify-center bg-neutral-800"
+          >
+          {% if not decision.is_daily_decision and request.user.is_authenticated %}
+            <form method="POST" action="{% url 'set-daily-decision' pk=decision.id %}" class="flex flex-1 items-center justify-center">
+              {% csrf_token %}
+              <button type="submit" class="flex flex-1 items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="white"
+                  class="w-[11%] max-h-[60%]"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+                  />
+                </svg>
+              </button>
+            </form>
+          {% else %}
+            <a href="{% url 'daily-decisions' %}" class="flex flex-1 items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="white"
+                class="w-[11%] max-h-[60%]"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z"
+                />
+              </svg>
+            </a>
+          {% endif %}
+          </div>
+          <div
+            class="settings flex flex-1 items-center justify-center bg-neutral-800"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="white"
+              class="w-[14%] max-h-[60%]"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 00-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 00-2.282.819l-.922 1.597a1.875 1.875 0 00.432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 000 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 00-.432 2.385l.922 1.597a1.875 1.875 0 002.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 002.28-.819l.923-1.597a1.875 1.875 0 00-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 000-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 00-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 00-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 00-1.85-1.567h-1.843zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div
+            class="new-decision flex flex-1 items-center justify-center bg-neutral-800"
+          >
+            <a href="{% url 'create-quick-decision' %}" class="flex flex-1 items-center justify-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="white"
+                class="w-[15%] max-h-[60%]"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 6v12m6-6H6"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <script>
+    const input = document.querySelector('#new-option-input');
+    input.focus();
+    input.select();
+  </script>
+
+{% endblock main %}

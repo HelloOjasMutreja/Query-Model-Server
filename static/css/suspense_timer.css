@@ -1,0 +1,41 @@
+.first {
+  border-radius: 60% 40% 54% 46% / 39% 56% 44% 61%;
+  animation-delay: 0s;
+  animation: spin 3s linear infinite, expand 2s linear 2s;
+}
+.second {
+  border-radius: 45% 55% 43% 57% / 55% 41% 59% 45% ;
+  animation-delay: 0.2s;
+  animation: spin 3s linear infinite, expand 2s linear 2s;
+}
+.third {
+  border-radius: 49% 51% 37% 63% / 45% 39% 61% 55%;
+  animation-delay: 0.1s;
+  animation: spin-reverse 3s linear infinite, expand 2s linear 2s;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-reverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+@keyframes expand {
+  from {
+      scale: 1;
+      display: block;
+  }
+  to {
+      scale: 6;
+  }
+}

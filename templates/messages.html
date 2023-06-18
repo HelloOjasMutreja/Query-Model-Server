@@ -1,0 +1,61 @@
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+      <div id="message" class="max-w-[90vw] lg:max-w-lg lg:w-[32vw] overflow-hidden rounded-[3vh] lg:rounded-[4vh] bg-black text-white shadow-md shadow-yellow-500/20 border-2 border-green-500 notification justify-self-end lg:place-self-end place-self-start">
+        <div class="flex">
+          <div class="flex items-center gap-4 p-2">
+            <div class="shrink-0 bg-neutral-800 text-emerald-500 h-full p-4 rounded-[3vh] flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-9 h-9">
+                <path fill-rule="evenodd" d="M12.963 2.286a.75.75 0 00-1.071-.136 9.742 9.742 0 00-3.539 6.177A7.547 7.547 0 016.648 6.61a.75.75 0 00-1.152-.082A9 9 0 1015.68 4.534a7.46 7.46 0 01-2.717-2.248zM15.75 14.25a3.75 3.75 0 11-7.313-1.172c.628.465 1.35.81 2.133 1a5.99 5.99 0 011.925-3.545 3.75 3.75 0 013.255 3.717z" clip-rule="evenodd" />
+              </svg>                            
+            </div>
+            <div class="space-y-1 p-2">
+              <p class="font-bold capitalize text-2xl text-emerald-400 ">
+                {{ message }}
+              </p>
+              <p class="text-base">
+                <!-- message description -->
+              </p>
+            </div>
+          </div>
+          <div class="flex cursor-pointer items-start p-4">
+            <button class="">
+              <svg width="27" height="27" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    {% elif message.tags == 'error' %}
+      <div id="message" class="max-w-[90vw] lg:max-w-lg lg:w-[32vw] overflow-hidden rounded-[3vh] lg:rounded-[4vh] bg-black text-white shadow-md shadow-red-500/20 border-2 border-red-800 notification justify-self-end lg:place-self-end place-self-start">
+        <div class="flex">
+          <div class="flex items-center gap-4 p-2">
+            <div class="shrink-0 bg-neutral-800 text-red-500 h-full p-4 rounded-[3vh] flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-20 h-20 lg:w-11 lg:h-11">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            </div>
+            <div class="space-y-4 lg:space-y-2 p-6 lg:p-3">
+              <p class="font-bold capitalize text-6xl lg:text-2xl text-red-400 ">
+                {{ message }}
+              </p>
+              <p class="text-4xl lg:text-base">
+                <!-- message decsription -->
+              </p>
+            </div>
+          </div>
+          <div class="flex cursor-pointer justify-self-end items-start p-6">
+            <button class="">
+              <svg viewBox="0 0 24 24" class="w-14 h-14 lg:w-8 lg:h-8">
+                <path fill="currentColor" d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12z"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    {% else %}
+        <li>{{ message }}</li>
+    {% endif %}
+  {% endfor %}
+{% endif %}

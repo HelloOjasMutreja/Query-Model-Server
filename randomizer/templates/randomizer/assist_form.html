@@ -1,0 +1,60 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load compress %}
+
+{% block main %}
+
+<div class="bg-gray-900 text-white p-6">
+  <form method="post">
+    {% csrf_token %}
+    
+    <!-- Hidden field to store the decision ID -->
+    <input type="hidden" name="decision_id" value="{{ decision.id }}">
+    
+    <!-- Option field -->
+    <div class="mb-4">
+      <label for="option" class="block text-sm font-medium">Option:</label>
+      <select name="option" id="option" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white">
+        {% for option in options %}
+          <option value="{{ option.id }}">{{ option.content }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Anonymity field -->
+    <div class="mb-4 form-check">
+      <input class="form-check-input" type="checkbox" id="anonymousCheckbox" name="anonymous" value="true">
+      <label class="form-check-label" for="anonymousCheckbox">Assist anonymously</label>
+    </div>
+    
+    <!-- Message field -->
+    <div class="mb-4">
+      <label for="message" class="block text-sm font-medium">Message:</label>
+      <textarea name="message" id="message" rows="4" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white"></textarea>
+    </div>
+    
+    <!-- Caution field -->
+    <div class="mb-4">
+      <label for="caution" class="block text-sm font-medium">Caution:</label>
+      <textarea name="caution" id="caution" rows="4" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white"></textarea>
+    </div>
+    
+    <!-- Pros field -->
+    <div class="mb-4">
+      <label for="pros" class="block text-sm font-medium">Pros:</label>
+      <textarea name="pros" id="pros" rows="4" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white"></textarea>
+    </div>
+    
+    <!-- Cons field -->
+    <div class="mb-4">
+      <label for="cons" class="block text-sm font-medium">Cons:</label>
+      <textarea name="cons" id="cons" rows="4" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white"></textarea>
+    </div>
+    
+    <button type="submit" class="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">Submit</button>
+  </form>
+</div>
+
+{% endblock main %}

@@ -1,0 +1,105 @@
+{% extends "main.html" %}
+
+{% load static %}
+
+{% load filters %}
+
+{% load compress %}
+
+{% block main %}
+
+<div class="flex w-full h-full gap-[5vh] p-[6vh]">
+    {% include 'navbar.html' %}
+    <div class="container">
+        <h1 class="text-white my-[10vh] text-5xl">Hi {{ user.first_name }},</h1>
+        <div class="w-[16vh] h-[16vh] rounded-full overflow-hidden">
+            <img src="{{ user.profile_pic.url }}" alt="Profile Picture" class="object-cover w-full h-full">
+        </div>
+        <div class="w-6vh h-6vh">
+            {% if grid %}
+                <div class="grid grid-cols-6 gap-1 h-full">
+                    {% for row in grid.data|slice:":36"|make_list|chunk:6 %}
+                        {% for cell in row %}
+                            <div class="text-white h-1vh">
+                                {% if cell == '1' %}
+                                    <div class="h-full w-full rounded-full text-white bg-white">.</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-white">No grid data available.</p>
+            {% endif %}
+        </div>
+        
+              
+    </div>
+
+    <div class="container overflow-y-scroll">
+        <div class="bg-white shadow rounded-lg px-6 py-4">
+            <h1 class="text-3xl font-semibold mb-4">User Profile</h1>
+            <h2 class="text-xl font-bold mb-2">Profile Information</h2>
+            <p>Gender: {{ user.gender }}</p>
+            <p>Date of Birth: {{ user.dob }}</p>
+            <p>Age: {{ user.calculate_age }}</p>
+            <!-- Add more profile information fields as needed -->
+            <div class="w-6vh h-6vh">
+                {% if grid %}
+                    <div class="grid grid-cols-6 gap-1 h-full">
+                        {% for row in grid.data|slice:":36"|make_list|chunk:6 %}
+                            {% for cell in row %}
+                                <div class="text-white h-1vh">
+                                    {% if cell == '1' %}
+                                        <div class="h-full w-full rounded-full text-black bg-black">.</div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-white">No grid data available.</p>
+                {% endif %}
+            </div>
+            
+
+            <h2 class="text-xl font-bold mt-4 mb-2">Recent Activity</h2>
+            <ul class="list-disc pl-4">
+            {% for activity in recent_activity %}
+                <li>{{ activity.description }} - {{ activity.timestamp }}</li>
+            {% empty %}
+                <li>No recent activity.</li>
+            {% endfor %}
+            </ul>
+
+            <h2 class="text-xl font-bold mt-4 mb-2">Recent Decisions</h2>
+            <ul class="list-disc pl-4">
+            {% for decision in recent_decisions %}
+                <li><a href="{% url 'public-decision' decision.id %}" class="text-blue-500 hover:underline">{{ decision.title }}</a></li>
+            {% empty %}
+                <li>No recent decisions.</li>
+            {% endfor %}
+            </ul>
+
+            <h2 class="text-xl font-bold mt-4 mb-2">Contributions</h2>
+            <ul class="list-disc pl-4">
+            {% for assist in recent_assists %}
+                <li>{{ assist.message|truncatechars:30 }} | <a href="{% url 'public-decision' assist.decision.id %}" class="text-blue-500 hover:underline">{{assist.decision.title}}</a></li>
+            {% empty %}
+                <li>No recent assists.</li>
+            {% endfor %}
+            </ul>
+
+            <h2 class="text-xl font-bold mt-4 mb-2">Saved Assists</h2>
+            <ul class="list-disc pl-4">
+            {% for assist in upvoted_assists %}
+                <li>{{ assist.message|truncatechars:25 }}</li>
+            {% empty %}
+                <li>No saved/upvoted assists.</li>
+            {% endfor %}
+            </ul>
+            <p class="text-gray-500">{{ upvote_count }} people found {{user.first_name|title}} helpful.</p>
+        </div>
+    </div>
+</div>
+{% endblock main %}

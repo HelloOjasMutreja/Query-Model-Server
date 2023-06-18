@@ -1,0 +1,23 @@
+{% extends 'main.html' %}
+
+{% block main %}
+
+<ul class="bg-gray-900 text-white">
+    {% for category in categories %}
+        <li>
+            <a href="?category={{ category.id }}" class="block py-2 px-4 {% if category.id|stringformat:"s" in selected_categories %}bg-gray-700{% endif %}">
+                {{ category.name }}
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+
+<div class="mt-4">
+    {% for decision in decisions %}
+        <h2 class="text-2xl text-white">{{ decision.title }}</h2>
+        <p class="text-white">{{ decision.description }}</p>
+        <!-- Display other relevant decision information -->
+    {% endfor %}
+</div>
+
+{% endblock main %}

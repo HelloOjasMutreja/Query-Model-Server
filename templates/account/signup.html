@@ -1,0 +1,129 @@
+{% extends "main_accounts.html" %}
+
+{% load static %}
+
+{% load compress %}
+
+{% load socialaccount %}
+
+{% get_providers as socialaccount_providers %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Signup" %}{% endblock %}
+
+{% block content %}
+  <div
+    class="container-box w-full h-full p-[1vh]"
+  >
+    <div
+      class="grid grid-rows-6 lg:grid-rows-1 lg:grid-cols-2 w-full h-full"
+    >
+      <div
+        class="font-medium flex lg:flex-col gap-10 justify-center items-center row-span-1 lg:row-span-6"
+      >
+        <div
+          class="log-in text-[2.25rem] lg:text-8xl p-2 lg:p-0 text-neutral-500"
+        >
+          <a href="{{ login_url }}">Login</a>
+        </div>
+        <div class="sign-up text-4xl lg:text-9xl">{% trans "Sign Up" %}</div>
+      </div>
+      <div
+        class="grid grid-rows-5 row-span-5 text-center m-[3%] lg:m-[7%] form"
+      >
+        <form class="row-span-3 signup grid grid-rows-5 py-2 gap-2 bg-black rounded-[3vh]" id="signup_form" method="post" action="{% url 'account_signup' %}">
+          {% csrf_token %}
+          
+          {% if form.errors %}
+            <div class="error text-white">
+              {% for field in form %}
+                {% for error in field.errors %}
+                  <span>{{ error }}</span><br>
+                {% endfor %}
+              {% endfor %}
+            </div>
+          {% endif %}
+          
+          <input
+            type="{{ form.username.field.widget.input_type }}" 
+            name="{{ form.username.name }}" 
+            maxlength="{{ form.username.field.max_length }}" 
+            required id="{{ form.username.id_for_label }}" 
+            class="mx-2 pl-4 rounded-[2vh] bg-white font-medium text-xl placeholder-black"
+            placeholder="Username"
+          />
+          <input
+            type="{{ form.email.field.widget.input_type }}" 
+            name="{{ form.email.name }}" 
+            maxlength="{{ form.email.field.max_length }}" 
+            required id="{{ form.email.id_for_label }}" 
+            class="mx-2 pl-4 rounded-[2vh] bg-white font-medium text-xl placeholder-black"
+            placeholder="Email"
+          />
+          <input
+            type="{{ form.password1.field.widget.input_type }}" 
+            name="{{ form.password1.name }}" 
+            required id="{{ form.password1.id_for_label }}"
+            class="mx-2 pl-4 rounded-[2vh] bg-white font-medium text-xl placeholder-black"
+            placeholder="Password"
+          />
+          <input
+            type="{{ form.password2.field.widget.input_type }}" 
+            name="{{ form.password2.name }}"
+            required id="{{ form.password2.id_for_label }}"
+            class="mx-2 pl-4 rounded-[2vh] bg-white font-medium text-xl placeholder-black"
+            placeholder="Confirm Password"
+          />
+          <select name="{{ form.gender.name }}" id="{{ form.gender.id_for_label }}" class="mx-2 pl-4 rounded-[2vh] bg-white font-medium text-xl placeholder-black">
+            {% for value, label in form.gender.field.choices %}
+              <option value="{{ value }}">{{ label }}</option>
+            {% endfor %}
+          </select>
+          <input
+            type="date"
+            name="{{ form.dob.name }}"
+            id="{{ form.dob.id_for_label }}"
+            class="mx-2 pl-4 rounded-[2vh] bg-white font-medium text-xl placeholder-black"
+            placeholder="Date of Birth"
+          />
+          <input
+            type="text"
+            name="{{ form.pseudonymous_name.name }}"
+            id="{{ form.pseudonymous_name.id_for_label }}"
+            class="mx-2 pl-4 rounded-[2vh] bg-white font-medium text-xl placeholder-black"
+            placeholder="Pseudonymous Name"
+          />
+          {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          {% endif %}
+          <button 
+            type="submit"              
+            class="mx-2 pl-4 rounded-[2vh] flex items-center bg-amber-400 font-medium text-2xl text-black">
+            {% trans "Sign Up" %}
+          </button>
+        </form>
+        <div class="row-span-2 grid grid-rows-3">
+          <div
+            class="or text-xl font-bold p-4 flex items-center justify-center"
+          >
+            OR
+          </div>        
+          <div 
+          class="socialaccount_ballot google bg-black rounded-[3vh] flex items-center p-2"
+          >
+            <div class="bg-white rounded-[2vh] h-full aspect-square flex items-center justify-center">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" alt="" class="h-[5vh] lg:h-[7vh]" />
+            </div>
+            <div class="text-xl flex-1 lg:text-2xl flex items-center text-white col-span-5 lg:col-span-6 text-left font-medium ml-4">
+              <ul class="socialaccount_providers">
+                {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+{% endblock %}
