@@ -4,7 +4,7 @@
         "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "PGPASSWORD=${{Postgres.PGPASSWORD}} psql -h ${{Postgres.PGHOST}} -U ${{Postgres.PGUSER}} -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' && python manage.py makemigrations && python manage.py migrate --fake && python manage.py migrate && python manage.py collectstatic --noinput && gunicorn clusera.wsgi",
+        "startCommand": "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn clusera.wsgi",
         "restartPolicyType": "ON_FAILURE",
         "restartPolicyMaxRetries": 5
     }
