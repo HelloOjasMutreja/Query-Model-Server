@@ -3,8 +3,8 @@ module.exports = {
   purge: [
     './templates/*.html',
     './**/*.js',
-    './randomizer/**/**/*.html',
-    './accounts/**/**/*.html',
+    './randomizer/templates/randomizer/*.html',
+    './accounts/templates/**/*.html',
   ],
   theme: {
     extend: {},

@@ -1,88 +1,231 @@
-{% extends 'main.html' %}
-
+{% extends 'main.html' %} {% load static %} {% load compress %} 
 {% block main %}
-
-<form method="POST" action="">
-  <div class="flex w-full h-full flex-col">
-    <div class="space-y-[6vh] w-full mt-[25vh] flex-1">
-      <div class="text-lg sm:text-2xl text-center text-white"
-      >
-        What is your decision all about?
-      </div>
-      <div class="w-full flex justify-center">
-        <div class="flex-1 max-w-[80vw]">
-            
-          {% csrf_token %}
-          <input
-            type="text"
-            name="title"
-            maxlength="50"
-            required_id="id_title"
-            class="text-3xl lg:text-6xl rounded-[3vh] lg:rounded-[4vh] w-full bg-black border-neutral-400 focus:border-white outline-none p-5 sm:p-10 border-4 font-black text-white"
-            value="{{ form.initial.title }}"
-          />
-          
-        </div>
-      </div>
-    </div>
-
-    <h3>Options:</h3>
-    {% for option in decision.option_set.all %}
-      <div>
-        <input type="checkbox" name="preferred_option" value="{{ option.id }}" {% if option.is_preferred %}checked{% endif %}>
-        <label class="text-white">{{ option.content }}</label>
-      </div>
-    {% endfor %}
-
-    <h4 class="text-white">Situation:</h4>
-    <textarea id="id_situation" name="situation" rows="4" cols="50"  class="bg-gray-800 text-white rounded-md p-2 mb-4">{{ decision.situation }}</textarea>
-
-    <label class="text-white">Categories:</label>
-    {% for category in form.categories %}
-      <div class="text-white">
-        {{ category.tag }}
-        {{ category.choice_label }}
-      </div>
-    {% endfor %}
-
+  <div class="flex items-center justify-center w-full h-full gap-[2vh]">
     <div
-      class="text-white flex justify-center my-[10vh] flex flex-row gap-4"
-    >
-      <a href="{% url 'home' %}">
+      class="flex-1 lg:mx-[15vw] my-[10vh] text-white flex flex-col items-center">
+      <form action="" class="w-full lg:w-max" method="POST">
+        {% csrf_token %}
+
+        <!-- Add a hidden field to store the current step -->
+        <input type="hidden" name="step" value="{{ step }}" />
+
+        {% if step == '1' %}
         <div
-          class="bg-neutral-800 flex justify-center items-center text-white rounded-[3vh] h-[12vh] aspect-square cancel-button"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            class="w-[50%] max-w-[5vw] stroke-1 stroke-white"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
-              clip-rule="evenodd"
-            />
-          </svg>
+          class="flex flex-col gap-[10vh] overflow-y-scroll h-[60vh] pl-[1vw] w-full min-w-[40vw] max-h-[60vh]">
+          <div class="question flex flex-col gap-[2vh] p-1">
+            <p class="text-2xl lg:text-3xl font-medium">Decision Title</p>
+            <input
+              type="text"
+              id="id_title"
+              name="title"
+              value="{{ form.title.value }}"
+              class="w-full bg-neutral-800 h-[12vh] rounded-[3vh] text-4xl px-[3.5vh]" />
+          </div>
+          <div class="question flex flex-col gap-[2vh]">
+            <p class="text-2xl lg:text-3xl font-medium">Decision Category</p>
+            <select
+                id="id_categories" name="categories"
+                class="bg-neutral-800 rounded-[3vh] h-[12vh] w-full text-2xl p-[2vh] text-white">
+                {% for category in categories %}
+                <option
+                    value="{{ category.id }}"
+                    {% if category.id == form.categories.value %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
+                {% endfor %}
+            </select>
+          </div>
         </div>
-      </a>
-      <button type="submit"
-        class="bg-neutral-800 flex justify-center items-center text-white rounded-[3vh] h-[12vh] aspect-square save-button"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          class="w-[50%] max-w-[5vw] stroke-1 stroke-white"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-            clip-rule="evenodd"
-          />
-        </svg>
-      </button>
+        <div class="buttons flex justify-center gap-[1vh] w-full h-full">
+          <button
+            type="submit"
+            class="forward flex items-center justify-center text-black w-3/5 bg-white h-full rounded-[3vh] mt-[5vh] text-2xl font-semibold p-[4vh]">
+            <div class="flex-1 flex justify-center">Forward</div>
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="hidden md:block md:h-[5vh]">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        {% elif step == '2' %}
+
+        <div
+          class="flex flex-col gap-[10vh] overflow-y-scroll h-[60vh] pl-[1vw] w-full min-w-[40vw] max-h-[60vh]">
+          <!-- Render the overview form -->
+          <div class="question flex flex-col gap-[2vh] mx-[1vh]">
+            <p class="text-2xl lg:text-3xl font-medium">Overview</p>
+            <textarea
+              class="w-full lg:w-[50vw] bg-neutral-800 h-[40vh] rounded-[3vh] text-3xl p-[5vh]"
+              id="id_overview"
+              name="overview">
+              {{ form.overview.value }}
+            </textarea>
+          </div>
+        </div>
+
+        <div class="buttons flex justify-center gap-[2vh] w-full h-full">
+          <button
+            name="back"
+            class="backward flex items-center bg-neutral-800 w-2/5 h-full rounded-[3vh] mt-[5vh] text-2xl font-semibold p-[4vh]">
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="hidden md:block md:h-[5vh]">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+            </div>
+            <div class="flex-1 flex justify-center">Backward</div>
+          </button>
+          <button
+            type="submit"
+            class="forward flex items-center w-2/5 bg-white h-full rounded-[3vh] mt-[5vh] text-black text-2xl font-semibold p-[4vh]">
+            <div class="flex-1 flex justify-center">Forward</div>
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="hidden md:block md:h-[5vh]">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+          </button>
+        </div>
+
+        {% elif step == '3' %}
+
+        <div
+          class="flex flex-col gap-[10vh] overflow-x-hidden overflow-y-scroll h-[60vh] pl-[1vw] w-full min-w-[40vw] max-h-[60vh]">
+          <div class="question flex flex-col gap-[2vh] mx-[1vh]">
+            <p class="text-2xl lg:text-3xl font-medium">Choices</p>
+
+            {% if options %}
+            <!-- Display the added options -->
+            <div
+              class="options gap-[1vh] flex flex-col lg:min-w-[50vw]">
+
+              {% for option in options %}
+              <div
+                class="bg-neutral-800 min-h-[11vh] rounded-[3vh] flex items-center font-semibold text-2xl pl-[4vh]">
+                <div class="flex-1">{{ option.content }}</div>
+                <div class="self-center w-[8%] lg:py-[1%] mr-[4.5%]">
+                  <a href="{% url 'delete-option' option.id %}">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="delete h-[5vh] sm:h-[7vh] self-center p-[1vh]">
+                      <path
+                        fill-rule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm3 10.5a.75.75 0 000-1.5H9a.75.75 0 000 1.5h6z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <!-- Render the option input form -->
+          <div
+            class="bg-neutral-800 min-h-[11vh] rounded-[3vh] lg:min-w-[50vw] flex items-center font-semibold text-2xl pl-[4vh] bg-neutral-800 text-white border-4">
+            <input
+              type="text"
+              id="id_content"
+              name="content"
+              value="{{ form.content.value }}"
+              class="pl-0 flex w-full items-center lg:items-end bg-neutral-800 font-semibold text-2xl text-white outline-none"
+              placeholder="Add Option" />
+
+            <button type="submit" name="add_option">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="h-[10vh] self-center p-[3vh]">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 12.75l6 6 9-13.5" />
+              </svg>
+            </button>
+          </div>
+          </div>
+        </div>
+
+          <div class="buttons flex justify-center gap-[2vh] w-full h-full">
+            <!-- Back button -->
+            <button
+              type="submit"
+              name="back"
+              class="backward flex items-center bg-neutral-800 w-2/5 h-full rounded-[3vh] mt-[5vh] font-semibold text-xl sm:text-2xl p-[4vh]">
+              <div class="">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="hidden md:block md:h-[5vh]">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+              </div>
+              <div class="flex-1 flex justify-center">Backward</div>
+            </button>
+
+            <!-- Final submit button -->
+            <button
+              type="submit"
+              name="submit_form"
+              class="forward flex items-center w-2/5 bg-white h-full rounded-[3vh] mt-[5vh] text-black text-xl sm:text-2xl font-bold p-[4vh]">
+              <div class="flex-1 flex justify-center">Publish</div>
+              <div class="">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="hidden md:block md:h-[5vh]">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </div>
+            </button>
+          </div>
+          {% endif %}
+      </form>
     </div>
   </div>
-</form>
 {% endblock main %}

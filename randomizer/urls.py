@@ -15,7 +15,7 @@ urlpatterns = [
     path('ask-people/', views.createPublicDecision, name="create-public-decision"),
     path('create-public-decision/<int:pk>/', views.updatePublicDecision, name='update-public-decision'),
     
-    path('delete-option/<str:pk>/', views.deleteOption, name="delete-option"),
+    path('delete-option/<int:pk>/', views.deleteOption, name='delete-option'),
     path('decision/<int:pk>/random/', views.randomOption, name='random-option'),
 
     path('filter-decisions/', views.filter_decisions, name='filter_decisions'),

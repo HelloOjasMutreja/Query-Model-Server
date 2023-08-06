@@ -1,0 +1,65 @@
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load compress %}
+
+{% block main %}
+
+<form method="post" action="">
+    {% csrf_token %}
+    
+    <!-- Add a hidden field to store the current step -->
+    <input type="hidden" name="step" value="{{ step }}">
+    
+    {% if step == '1' %}
+      <!-- Render the title and category form -->
+      {{ form.title }}
+      {{ form.categories }}
+      
+      <!-- Button to proceed to the next step -->
+      <input type="submit" value="Next">
+    {% elif step == '2' %}
+      <!-- Render the overview form -->
+      {{ form.overview }}
+      
+      <input type="submit" name="back" value="Back">
+      <!-- Button to proceed to the next step or submit the form -->
+      <input type="submit" value="{% if next_step == '3' %}Finish{% else %}Next{% endif %}">
+    {% elif step == '3' %}
+        {% if options %}
+          <!-- Display the added options -->
+          {% for option in options %}
+              <div class="option lg:pb-[3.5%] pl-[4.5%] rounded-[3vh] lg:rounded-[4vh] flex items-center lg:items-end font-semibold text-xl lg:text-[1.3rem]">
+                  <div class="flex-1">{{ option.content }}</div>
+                  <div class="self-center w-[8%] lg:pt-[4.5%] mr-[4.5%]">
+                      <a href="{% url 'delete-option' option.id %}">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                              stroke="currentColor" class="h-[40%] lg:h-[50%] max-h-[8vh] delete">
+                              <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                      </a>
+                  </div>
+              </div>
+          {% endfor %}
+        {% endif %}
+        
+        <!-- Render the option input form -->
+        {{ form.content.errors }}
+        {{ form.content.label_tag }}
+        {{ form.content }}
+        
+        <!-- Button to add an option -->
+        <input type="submit" name="add_option" value="Add Option">
+
+        <!-- Back button -->
+        <input type="submit" name="back" value="Back">
+        
+        <!-- Final submit button -->
+        <input type="submit" name="submit_form" value="Submit">
+    {% endif %}
+    
+</form>
+
+{% endblock main %}

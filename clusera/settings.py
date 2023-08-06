@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-rc^*w^w&6g9_(uvx#6s*bnt!w)l0rdi%!l7mv#y%uc&x%wo5pk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 
     'compressor',
-    'tailwind',
 
     'randomizer',
     'accounts',
@@ -94,12 +93,8 @@ WSGI_APPLICATION = 'clusera.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': '38uo19k9Pb3Zjwx7Cq0V',
-        'HOST': 'containers-us-west-75.railway.app',
-        'PORT': '7182',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

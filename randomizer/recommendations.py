@@ -1,4 +1,4 @@
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Q
 from .models import Decision, UserDecisionInteraction
 import random
 from datetime import timedelta
@@ -19,7 +19,7 @@ def get_user_preferred_tags(user):
 
 def get_recommendations(user, num_recommendations=15):
     # Check if 20 minutes have passed since the last refresh
-    refresh_interval = timedelta(minutes=20)
+    refresh_interval = timedelta(minutes=1)
     now = timezone.now()
     try:
         last_refresh = UserRecommendationRefresh.objects.get(user=user).last_refresh
@@ -37,7 +37,13 @@ def get_recommendations(user, num_recommendations=15):
     assisted_decisions = UserDecisionInteraction.objects.filter(user=user, assists__gt=0).values_list('decision', flat=True)
     
     # Get recommended decisions
-    recommended_decisions = Decision.objects.filter(tags__name__in=preferred_tags).exclude(id__in=assisted_decisions).annotate(
+    recommended_decisions = Decision.objects.filter(
+        tags__name__in=preferred_tags
+    ).exclude(
+        id__in=assisted_decisions
+    ).exclude(
+        Q(title='') | Q(title=None) | Q(title='Untitled decision')
+    ).annotate(
         total_assists=Sum('userdecisioninteraction__assists'),
         total_click_count=Sum('userdecisioninteraction__click_count'),
         total_view_time=Sum('userdecisioninteraction__view_time')

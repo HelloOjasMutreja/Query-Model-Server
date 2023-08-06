@@ -1,6 +1,23 @@
 from django.forms import ModelForm
 from django import forms
-from .models import Decision, Category, Assist
+from .models import Decision, Category, Option
+
+class TitleCategoryForm(forms.Form):
+    title = forms.CharField(max_length=50, required=False)
+    categories = forms.ModelMultipleChoiceField(queryset=Category.objects.all(), required=False)
+
+class OverviewForm(forms.Form):
+    overview = forms.CharField(max_length=500, required=False, widget=forms.Textarea)
+
+class OptionForm(forms.ModelForm):
+    class Meta:
+        model = Option
+        fields = ['content']
+        widgets = {'content': forms.TextInput(attrs={'placeholder': 'Add option'})}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content'].required = False
 
 class DecisionForm(ModelForm):
     categories = forms.ModelMultipleChoiceField(

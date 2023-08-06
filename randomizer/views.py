@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .models import Decision, Option, ImageSet, Category, Assist, Tag, HelpfulUpvote, UserDecisionInteraction
-from .forms import DecisionForm
+from .forms import *
 import random
 from django.urls import reverse
 from django.db.models import Q
@@ -28,11 +28,37 @@ def home(request):
     return render(request, 'randomizer/home.html', context) 
 # end def
 
+@login_required
+def recommendations(request):
+    user = request.user
+    
+    # Get new recommendations if available
+    new_recommendations = get_recommendations(user)
+    
+    # Check if new recommendations are available
+    if new_recommendations:
+        # Update the current list of recommendations in the user's session
+        request.session['recommendations'] = [decision.id for decision in new_recommendations]
+    else:
+        # Get the current list of recommendations from the user's session
+        recommendation_ids = request.session.get('recommendations', [])
+        new_recommendations = Decision.objects.filter(id__in=recommendation_ids)
+    
+    context = {'recommended_decisions': new_recommendations}
+    return render(request, 'randomizer/recommendations.html', context)
+# end def
+
 def feed(request):
     if request.user.is_authenticated:
-        decisions = Decision.objects.exclude(user=request.user).filter(is_public_decision=True)
+        # Check if user has recommendations in session
+        recommendation_ids = request.session.get('recommendations', [])
+        if recommendation_ids:
+            decisions = Decision.objects.filter(id__in=recommendation_ids)
+        else:
+            decisions = Decision.objects.exclude(user=request.user).filter(is_public_decision=True)
     else:
         decisions = Decision.objects.filter(is_public_decision=True)
+    
     context = {'decisions': decisions}
     return render(request, 'randomizer/feed.html', context)
 # end def
@@ -162,16 +188,19 @@ def publicDecision(request, pk):
     situation = decision.situation
     categories = Category.objects.all()
 
-    # Create or update the UserDecisionInteraction object for the current user and decision
-    user_interaction, created = UserDecisionInteraction.objects.get_or_create(user=request.user, decision=decision)
+    if request.user.is_authenticated:
+        # Create or update the UserDecisionInteraction object for the current user and decision
+        user_interaction, created = UserDecisionInteraction.objects.get_or_create(user=request.user, decision=decision)
 
-    # If the user is starting a new interaction, update the start time
-    if created or user_interaction.last_interaction_time is None:
-        user_interaction.start_timer()
+        # If the user is starting a new interaction, update the start time
+        if created or user_interaction.last_interaction_time is None:
+            user_interaction.start_timer()
 
-    # Increment the click count for each visit to the public decision page
-    user_interaction.click_count += 1
-    user_interaction.save()
+        # Increment the click count for each visit to the public decision page
+        user_interaction.click_count += 1
+        user_interaction.save()
+    else:
+        user_interaction = None
 
     p = inflect.engine()
 
@@ -179,20 +208,9 @@ def publicDecision(request, pk):
         if 'select_categories' in request.POST:
             selected_categories = request.POST.getlist('categories', [])
             decision.categories.set(selected_categories)
-        else:
-            if options.count() < 4:
-                option = Option.objects.create(
-                    user=request.user if request.user.is_authenticated else None,
-                    decision=decision,
-                    content=capitalize_transform_text(request.POST.get('content')),
-                )
-                # messages.success(request, 'Option added successfully.')
-            else:
-                messages.error(request, 'Cannot add more than 4 options.')
-                return redirect('public-decision', pk=decision.id)
-            
+
     # Stop the timer and update the view time when the user leaves the decision page
-    if user_interaction.last_interaction_time:
+    if user_interaction and user_interaction.last_interaction_time:
         user_interaction.stop_timer()
 
     context = {
@@ -221,6 +239,7 @@ def createPublicDecision(request):
     decision.is_public_decision = True
     decision.is_quick_decision = False
     decision.is_daily_decision = False
+    decision.overview = ''
     decision.situation = ''
     decision.save()
     return redirect(updatePublicDecision, pk=decision.id)
@@ -229,53 +248,77 @@ def createPublicDecision(request):
 @login_required(login_url='login')
 def updatePublicDecision(request, pk):
     decision = Decision.objects.get(id=pk)
+    options = decision.option_set.all()
+    categories = Category.objects.all()  # Fetch all categories
 
     if request.user != decision.user:
         messages.error(request, 'You are not allowed here!')
         return redirect('home')
 
+    form = None  # Initialize form to None
+
     if request.method == 'POST':
-        form = DecisionForm(request.POST, instance=decision)
-        if form.is_valid():
-            decision = form.save(commit=False)
+        current_step = request.POST.get('step', '1')
+        next_step = current_step  # Initialize next_step with the current step
 
-            if decision.title:
-                decision.title = capitalize_transform_text(decision.title)
+        if current_step == '1':
+            form = TitleCategoryForm(request.POST)
+            if form.is_valid():
+                decision.title = form.cleaned_data['title']
+                decision.categories.set(form.cleaned_data['categories'])
+                decision.save()
+
+                # Proceed to the next step
+                next_step = '2'
+                form = OverviewForm(initial={'overview': decision.overview})  # Pass initial data for the form
             else:
-                decision.title = 'Untitled Decision'
+                next_step = '1'  # Stay on the current step in case of errors
 
-            decision.is_public_decision = True
+        elif current_step == '2':
+            if 'back' in request.POST:
+                # Go back to step 1
+                next_step = '1'
+                form = TitleCategoryForm(initial={'title': decision.title, 'categories': decision.categories.all()})  # Pass initial data for the form
+            else:
+                form = OverviewForm(request.POST)
+                if form.is_valid():
+                    decision.overview = form.cleaned_data['overview']
+                    decision.save()
 
-            decision.situation = form.cleaned_data['situation']
+                    # Proceed to the next step
+                    next_step = '3'  # Create a new form for the options
+                else:
+                    next_step = '2'  # Stay on the current step in case of errors
 
-            selected_categories = form.cleaned_data['categories']
-            decision.categories.set(selected_categories)
+        elif current_step == '3':
+            if 'add_option' in request.POST:
+                if options.count() < 4:
+                    Option.objects.create(
+                        user=request.user if request.user.is_authenticated else None,
+                        decision=decision,
+                        content=capitalize_transform_text(request.POST.get('content')),
+                    )
+            elif 'back' in request.POST:
+                # Go back to step 2
+                next_step = '2'
+                form = OverviewForm(initial={'overview': decision.overview})  # Pass initial data for the form
+            elif 'submit_form' in request.POST:
+                messages.success(request, 'Form submitted successfully!')
+                return redirect('public-decision', pk=decision.id)
+            else:
+                # Default to step 1 if next_step is not defined
+                next_step = '1'
+                form = TitleCategoryForm(initial={'title': decision.title, 'categories': decision.categories.all()})  # Pass initial data for the form
 
-            decision.save()
-
-            # Extract tags from the updated title
-            tags = extract_tags_from_title(decision.title)
-            decision.tags.clear()  # Remove existing tags
-            for tag_name in tags:
-                tag, created = Tag.objects.get_or_create(name=tag_name)
-                decision.tags.add(tag)
-
-            # Handle preferred option selection
-            preferred_option_id = request.POST.get('preferred_option')
-            if preferred_option_id:
-                decision.option_set.update(is_preferred=False)  # Reset all options to not preferred
-                preferred_option = decision.option_set.get(id=preferred_option_id)
-                preferred_option.is_preferred = True
-                preferred_option.save()
-
-            messages.success(request, 'Decision updated successfully!')
-            return redirect('public-decision', pk=decision.id)
-
-        messages.error(request, 'Please correct the errors below.')
     else:
-        form = DecisionForm(instance=decision)
+        form_data = {
+            'title': decision.title,
+            'categories': decision.categories.first() if decision.categories.exists() else None,
+        }
+        form = TitleCategoryForm(initial=form_data)  # Pass initial data for the form
+        next_step = '1'
 
-    context = {'form': form, 'decision': decision}
+    context = {'form': form, 'decision': decision, 'step': next_step, 'options': options, 'categories': categories}
     return render(request, 'randomizer/public_update_decision.html', context)
 # end def
 
@@ -297,18 +340,14 @@ def deleteDecision(request, pk):
     return render(request, 'randomizer/delete.html', {'obj': decision})
 # end def
 
-@login_required(login_url='login')
 def deleteOption(request, pk):
     option = Option.objects.get(id=pk)
     decision = option.decision
 
-    if request.user != option.user:
-        return HttpResponse('You are not allowed here!')
-
     option.delete()
 
     if decision.is_public_decision:
-        return redirect(publicDecision, pk=decision.id)
+        return redirect(updatePublicDecision, pk=decision.id)
     else:
         return redirect(quickDecision, pk=decision.id)  
 # end def
@@ -377,7 +416,6 @@ def unset_daily_decision(request, pk):
     return redirect('decision', pk=decision.id)
 # end def
 
-@login_required(login_url='login')
 def assist_form(request, decision_id):
     decision = Decision.objects.get(id=decision_id)
     options = Option.objects.filter(decision=decision)
@@ -390,9 +428,13 @@ def assist_form(request, decision_id):
         cons = request.POST.get('cons')
         is_anonymous = request.POST.get('anonymous', False)
 
-        option = Option.objects.get(id=option_id)
-
         assisted_by = request.user if request.user.is_authenticated else None
+
+        if option_id is None:
+            option = None
+        else:
+            option = Option.objects.get(id=option_id)
+
         if is_anonymous:
             assist = Assist.objects.create(
                 decision=decision,
@@ -463,24 +505,4 @@ def filter_option_messages(request, pk, option_id):
         'cons': cons,
     }
     return render(request, 'randomizer/filter_option_messages.html', context)
-# end def
-
-@login_required
-def recommendations(request):
-    user = request.user
-    
-    # Get new recommendations if available
-    new_recommendations = get_recommendations(user)
-    
-    # Check if new recommendations are available
-    if new_recommendations:
-        # Update the current list of recommendations in the user's session
-        request.session['recommendations'] = [decision.id for decision in new_recommendations]
-    else:
-        # Get the current list of recommendations from the user's session
-        recommendation_ids = request.session.get('recommendations', [])
-        new_recommendations = Decision.objects.filter(id__in=recommendation_ids)
-    
-    context = {'recommended_decisions': new_recommendations}
-    return render(request, 'randomizer/recommendations.html', context)
 # end def

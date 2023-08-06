@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     pseudonymous_name = models.CharField(max_length=255, blank=True, null=True)
     upvote_count = models.PositiveIntegerField(default=0)
     upvoted_assists = models.ManyToManyField('randomizer.Assist', related_name='upvoted_by')
+    bio = models.TextField(max_length=255, blank=True, null=True)
 
     GENDER_CHOICES = [
         ('M', 'Male'),

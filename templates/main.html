@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/suspense_timer.css' %}">
     {% include 'head/css.html' %}
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -34,13 +35,13 @@
 
   <div class="loader"></div>
 
-  <div class="page-transition container-box w-full h-full" >
+  <div class="page-transition w-full h-full" >
 
     {% include 'messages.html' %}
 
     {% include 'randomizer/loading.html' %}
 
-    <div class="container-box w-full h-full p-[2vh]">
+    <div class="container-box w-full h-full  p-[2vh] md:p-[2vh]">
       {% block main %}
 
       {% endblock main %}
