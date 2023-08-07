@@ -29,7 +29,7 @@
                 {% for category in categories %}
                 <option
                     value="{{ category.id }}"
-                    {% if category.id == form.categories.value %}selected{% endif %}>
+                    {% if decision.categories.exists and category.id == decision.categories.first.id %}selected{% endif %}>
                     {{ category.name }}
                 </option>
                 {% endfor %}

@@ -313,10 +313,16 @@ def updatePublicDecision(request, pk):
     else:
         form_data = {
             'title': decision.title,
-            'categories': decision.categories.first() if decision.categories.exists() else None,
+            'categories': decision.categories.first().id if decision.categories.exists() else None,
         }
-        form = TitleCategoryForm(initial=form_data)  # Pass initial data for the form
-        next_step = '1'
+        form = TitleCategoryForm(initial=form_data)
+
+        # Check if the 'current_step' is in the session
+        if 'current_step' in request.session:
+            next_step = request.session['current_step']
+            del request.session['current_step']  # Remove the 'current_step' from the session
+        else:
+            next_step = '1'
 
     context = {'form': form, 'decision': decision, 'step': next_step, 'options': options, 'categories': categories}
     return render(request, 'randomizer/public_update_decision.html', context)
@@ -347,6 +353,7 @@ def deleteOption(request, pk):
     option.delete()
 
     if decision.is_public_decision:
+        request.session['current_step'] = '3'  # Set the current step to '3' in the session
         return redirect(updatePublicDecision, pk=decision.id)
     else:
         return redirect(quickDecision, pk=decision.id)  

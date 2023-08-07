@@ -8,97 +8,173 @@
 
 {% block main %}
 
-<div class="flex w-full h-full gap-[5vh] p-[6vh]">
-    {% include 'navbar.html' %}
-    <div class="container">
-        <h1 class="text-white my-[10vh] text-5xl">Hi {{ user.first_name }},</h1>
-        <div class="w-[16vh] h-[16vh] rounded-full overflow-hidden">
-            {% if user.profile_pic %}
-                <img src="{{ user.profile_pic.url }}" alt="Profile Picture" class="object-cover w-full h-full">
-            {% endif %}
-        </div>
-        <div class="w-[16vh] h-[16vh]">
+<div class="flex w-full h-full gap-[6vh] text-white justify-center">
+  {% include 'navbar.html' %}
+
+  <div class="main-content flex-1 flex flex-col gap-[1vh] m-[2vh]">
+    <div
+      class="heading flex flex-col md:flex-row gap-[2vh] mb-[2vh] md:gap-[1.5vh] items-center justify-center">
+      <div class="flex gap-[1.5vh]">
+        <div
+          class="profile-pic aspect-square h-[12vh] md:h-[25vh] rounded-full">
+          {% if user.profile_pic %}
+            <img src="{{ user.profile_pic.url }}" alt="Profile Picture" class="object-cover w-full h-full">
+          {% endif %}
+
+          <div class="w-[16vh] h-[16vh]">
             {% if grid %}
-                <div class="grid grid-cols-6 gap-1 h-full">
-                    {% for row in grid.data|slice:":36"|make_list|chunk:6 %}
-                        {% for cell in row %}
-                            <div class="text-white flex justify-center items-center">
-                                {% if cell == '1' %}
-                                    <div class="h-[1.75vh] w-[1.75vh] rounded-full text-white bg-white"></div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                </div>
+              <div class="grid grid-cols-6 gap-1 h-full">
+                {% for row in grid.data|slice:":36"|make_list|chunk:6 %}
+                  {% for cell in row %}
+                    <div class="text-white flex justify-center items-center">
+                      {% if cell == '1' %}
+                        <div class="h-[1.75vh] w-[1.75vh] rounded-full text-white bg-white"></div>
+                      {% endif %}
+                    </div>
+                  {% endfor %}
+                {% endfor %}
+              </div>
             {% else %}
                 <p class="text-white">No grid data available.</p>
             {% endif %}
+          </div>
         </div>
+        <div
+          class="p-[2vw] flex flex-col gap-[1vh] md:gap-[2vh] flex-1 justify-center">
+          <p class="text-2xl lg:text-5xl md:text-4xl font-semibold">
+            {{ user.first_name }} {{ user.last_name }}
+          </p>
+          <p
+            class="text-sm mx-[1vh] md:mx-[3vh] text-neutral-400 underline font-semibold">
+            {{ user.email }}
+          </p>
+          <p class="hidden md:block lg:text-xl md:text-regular mx-[3vh]">
+            {% if user.bio %}
+              {{ user.bio }}
+            {% endif %}
+          </p>
+        </div>
+      </div>
+      <p class="md:hidden text-center text-sm mx-[3vh]">
+        {% if user.bio %}
+          {{ user.bio }}
+        {% endif %}
+      </p>
+      <div
+        class="flex gap-[8vw] md:gap-[1.5vh] w-full md:w-max font-medium">
+        <div
+          class="flex-1 md:m-[2vh] lg:m-[5vh] flex flex-col items-center justify-center">
+          <p class="font-bold text-2xl md:text-4xl lg:text-5xl">120</p>
+          <p class="text-sm md:text-regular lg:text-xl text-center">
+            Assists
+          </p>
+        </div>
+        <div
+          class="flex-1 md:m-[2vh] lg:m-[5vh] flex flex-col items-center justify-center">
+          <p class="font-bold text-2xl md:text-4xl lg:text-5xl">{{ upvote_count }}</p>
+          <p class="text-sm md:text-regular lg:text-xl text-center">
+            Helped
+          </p>
+        </div>
+      </div>
     </div>
-
-    <div class="container overflow-y-scroll">
-        <div class="bg-black shadow rounded-lg px-6 py-4">
-            <h1 class="text-3xl font-semibold mb-4">User Profile</h1>
-            <h2 class="text-xl font-bold mb-2">Profile Information</h2>
-            <p>Gender: {{ user.gender }}</p>
-            <p>Date of Birth: {{ user.dob }}</p>
-            <p>Age: {{ user.calculate_age }}</p>
-            <!-- Add more profile information fields as needed -->
-            <div class="w-6vh h-6vh">
-                {% if grid %}
-                    <div class="grid grid-cols-6 gap-1 h-full">
-                        {% for row in grid.data|slice:":36"|make_list|chunk:6 %}
-                            {% for cell in row %}
-                                <div class="text-white h-1vh">
-                                    {% if cell == '1' %}
-                                        <div class="h-full w-full rounded-full text-black bg-white">.</div>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <p class="text-white">No grid data available.</p>
-                {% endif %}
+    <div
+      class="flex items-navbar place-self-center gap-[4vw] font-semibold text-xs md:text-lg w-full items-center justify-center text-center">
+      <a href="?tab=decisions" 
+        class="flex-1 md:flex-none text-neutral-400 tab-link {% if selected_tab == 'decisions' %} text-white flex-col items-center justify-center {% endif %}" data-tab="decisions">Decisions
+        {% if selected_tab == 'decisions' %}
+          <div
+            class="h-[0.4vh] rounded-full w-[3vw] m-[0.5vh] lg:w-[1vw] bg-white"></div>
+        {% endif %}
+      </a>
+      <a href="?tab=assists"
+        class="flex-1 md:flex-none text-neutral-400 tab-link {% if selected_tab == 'assists' %} text-white flex-col items-center justify-center {% endif %}" data-tab="assists">Assists
+        {% if selected_tab == 'assists' %}
+          <div
+            class="h-[0.4vh] rounded-full w-[3vw] m-[0.5vh] lg:w-[1vw] bg-white"></div>
+        {% endif %}
+      </a>
+      <a href="?tab=saved" 
+        class="flex-1 md:flex-none text-neutral-400 tab-link {% if selected_tab == 'saved' %} text-white flex-col items-center justify-center {% endif %}" data-tab="saved">Saved
+        {% if selected_tab == 'saved' %}
+          <div
+            class="h-[0.4vh] rounded-full w-[3vw] m-[0.5vh] lg:w-[1vw] bg-white"></div>
+        {% endif %}
+      </a>
+    </div>
+    <!-- decisions -->
+    {% if selected_tab == 'decisions' %}
+      <div
+        class="items overflow-y-scroll md:p-[1vh] grid md:grid-cols-3 place-self-center w-full lg:grid-cols-4 gap-[1.5vw] flex-1 tab-content" id="decisions">
+        {% for decision in data %}
+          <a href="{% url 'public-decision' decision.id %}" class="text-blue-500 hover:underline">
+            <div
+              class="decision flex flex-col p-[3vh] lg:p-[2vh] md:items-center text-2xl md:text-4xl lg:text-[2.7rem] md:leading-snug lg:leading-tight font-semibold rounded-[3vh] md:rounded-[4vh] h-[18vh] md:h-[55vh]">
+              <div class="flex-1 pr-[4vh] flex md:items-center">
+                {{ decision.title }}
+              </div>
+              <div
+                class="uppercase text-white text-base self-end place-self-end lg:px-[1vw]">
+                1221
+                <p class="hidden md:inline-block">Assists</p>
+              </div>
+              <div
+                class="hidden lg:block opacity-0 m-[1vh] on-hover-line h-[1vh] rounded-full w-[50%]"></div>
             </div>
-
-            <h2 class="text-xl font-bold mt-4 mb-2">Recent Activity</h2>
-            <ul class="list-disc pl-4">
-            {% for activity in recent_activity %}
-                <li>{{ activity.description }} - {{ activity.timestamp }}</li>
-            {% empty %}
-                <li>No recent activity.</li>
-            {% endfor %}
-            </ul>
-
-            <h2 class="text-xl font-bold mt-4 mb-2">Recent Decisions</h2>
-            <ul class="list-disc pl-4">
-            {% for decision in recent_decisions %}
-                <li><a href="{% url 'public-decision' decision.id %}" class="text-blue-500 hover:underline">{{ decision.title }}</a></li>
-            {% empty %}
-                <li>No recent decisions.</li>
-            {% endfor %}
-            </ul>
-
-            <h2 class="text-xl font-bold mt-4 mb-2">Contributions</h2>
-            <ul class="list-disc pl-4">
-            {% for assist in recent_assists %}
-                <li>{{ assist.message|truncatechars:30 }} | <a href="{% url 'public-decision' assist.decision.id %}" class="text-blue-500 hover:underline">{{assist.decision.title}}</a></li>
-            {% empty %}
-                <li>No recent assists.</li>
-            {% endfor %}
-            </ul>
-
-            <h2 class="text-xl font-bold mt-4 mb-2">Saved Assists</h2>
-            <ul class="list-disc pl-4">
-            {% for assist in upvoted_assists %}
-                <li>{{ assist.message|truncatechars:25 }}</li>
-            {% empty %}
-                <li>No saved/upvoted assists.</li>
-            {% endfor %}
-            </ul>
-            <p class="text-gray-500">{{ upvote_count }} people found {{user.first_name|title}} helpful.</p>
-        </div>
-    </div>
+          </a>
+        {% empty %}
+            <p>No recent decisions.</p>
+        {% endfor %}
+      </div>
+    <!-- assists -->
+    {% elif selected_tab == 'assists' %}
+      <div
+        class="items overflow-y-scroll md:p-[1vh] grid md:grid-cols-3 place-self-center w-full lg:grid-cols-4 gap-[1.5vw] flex-1 tab-content" id="assists">
+        {% for assist in data %}
+          <a href="{% url 'public-decision' assist.decision.id %}" class="text-blue-500 hover:underline">
+            <div
+              class="decision flex flex-col p-[3vh] lg:p-[2vh] md:items-center text-2xl md:text-4xl lg:text-[2.7rem] md:leading-snug lg:leading-tight font-semibold rounded-[3vh] md:rounded-[4vh] h-[18vh] md:h-[55vh]">
+              <div class="flex-1 pr-[4vh] flex md:items-center">
+                {{assist.decision.title}}
+              </div>
+              <div
+                class="uppercase text-white text-base self-end place-self-end lg:px-[1vw]">
+                1221
+                <p class="hidden md:inline-block">Assists</p>
+              </div>
+              <div
+                class="hidden lg:block opacity-0 m-[1vh] on-hover-line h-[1vh] rounded-full w-[50%]"></div>
+            </div>
+          </a>
+        {% empty %}
+            <p>No recent assists.</p>
+        {% endfor %}    
+      </div>
+    <!-- saved -->
+    {% elif selected_tab == 'saved' %}
+      <div
+        class="items overflow-y-scroll md:p-[1vh] grid md:grid-cols-3 place-self-center w-full lg:grid-cols-4 gap-[1.5vw] flex-1 tab-content" id="saved">
+        {% for assist in data %}
+            <div
+              class="decision flex flex-col p-[3vh] lg:p-[2vh] md:items-center text-2xl md:text-4xl lg:text-[2.7rem] md:leading-snug lg:leading-tight font-semibold rounded-[3vh] md:rounded-[4vh] h-[18vh] md:h-[55vh]">
+              <div class="flex-1 pr-[4vh] flex md:items-center">
+                {{ assist.message|truncatechars:30 }}
+              </div>
+              <div
+                class="uppercase text-white text-base self-end place-self-end lg:px-[1vw]">
+                31
+                <p class="hidden md:inline-block">Upvotes</p>
+              </div>
+              <div
+                class="hidden lg:block opacity-0 m-[1vh] on-hover-line h-[1vh] rounded-full w-[50%]"></div>
+            </div>
+          </a>
+        {% empty %}
+            <p>No upvoted assists.</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
 </div>
+
 {% endblock main %}

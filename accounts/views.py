@@ -11,7 +11,7 @@ from django.dispatch import receiver
 @receiver(post_save, sender=CustomUser)
 def create_grid(sender, instance, created, **kwargs):
     if created:
-        # Create a new Grid object for the user
+
         grid = Grid.objects.create(user=instance)
         grid.generate_data()
         grid.save()
@@ -25,6 +25,16 @@ def userProfile(request, username):
     upvoted_assists = user.upvoted_assists.all()
     upvote_count = Assist.objects.filter(assisted_by=user).aggregate(total_upvotes=Count('helpfulupvote')).get('total_upvotes', 0)
 
+    tab = request.GET.get('tab', 'decisions')  # Default to 'decisions'
+    
+    # Fetch data based on the selected tab
+    if tab == 'decisions':
+        data = recent_decisions
+    elif tab == 'assists':
+        data = recent_assists
+    elif tab == 'saved':
+        data = upvoted_assists
+
     try:
         grid = Grid.objects.get(user=user)
         context = {
@@ -34,7 +44,9 @@ def userProfile(request, username):
             'recent_assists': recent_assists,
             'upvoted_assists': upvoted_assists,
             'upvote_count': upvote_count,
-            'grid': grid,  # Add the 'grid' object to the context
+            'grid': grid,
+            'data': data,
+            'selected_tab': tab,
         }
     except Grid.DoesNotExist:
         context = {
@@ -44,6 +56,8 @@ def userProfile(request, username):
             'recent_assists': recent_assists,
             'upvoted_assists': upvoted_assists,
             'upvote_count': upvote_count,
+            'data': data,
+            'selected_tab': tab,
         }
 
     return render(request, 'accounts/user_profile.html', context)
