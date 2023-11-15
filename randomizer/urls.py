@@ -5,6 +5,7 @@ urlpatterns = [
 
     path('', views.home, name="home"),
     path('feed', views.feed, name="feed"),
+    path('saved', views.savedDecisions, name="saved"),
     
     path('quick-decision/<str:pk>/', views.quickDecision, name='quick-decision'),
     path('create-decision/', views.createQuickDecision, name="create-quick-decision"),
@@ -25,7 +26,7 @@ urlpatterns = [
     path('decision/<int:pk>/set-daily-decision/', views.set_daily_decision, name='set-daily-decision'),
     path('decision/<int:pk>/unset-daily-decision/', views.unset_daily_decision, name='unset-daily-decision'),
 
-    path('public-decision/<int:decision_id>/assist/', views.assist_form, name='assist_form'),
+    path('public-decision/<int:pk>/assist/', views.assist_form, name='assist_form'),
     path('upvote/<int:assist_id>/', views.upvoteAssist, name='upvote_assist'),
     path('decision/<int:pk>/option/<int:option_id>/filter/', views.filter_option_messages, name='filter_option'),
 

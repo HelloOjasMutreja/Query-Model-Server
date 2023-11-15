@@ -6,9 +6,8 @@ class CustomUser(AbstractUser):
     profile_pic = models.ImageField(upload_to='profile_pics', blank=True, null=True)
     gender = models.CharField(max_length=10, blank=True, null=True)
     dob = models.DateField(blank=True, null=True)
-    pseudonymous_name = models.CharField(max_length=255, blank=True, null=True)
     upvote_count = models.PositiveIntegerField(default=0)
-    upvoted_assists = models.ManyToManyField('randomizer.Assist', related_name='upvoted_by')
+    upvoted_assists = models.ManyToManyField('randomizer.Assist', related_name='upvoted_by', blank=True)
     bio = models.TextField(max_length=255, blank=True, null=True)
 
     GENDER_CHOICES = [

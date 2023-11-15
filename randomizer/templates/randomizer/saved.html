@@ -1,0 +1,51 @@
+
+{% extends 'main.html' %}
+
+{% load static %}
+
+{% load compress %}
+
+{% block main %}
+
+  <div class="flex md:flex-row flex-col w-full h-full gap-[6vh] text-white">
+    {% include 'navbar.html' %}
+    <div class="flex-1 mt-[1vh] gap-[1vh] flex flex-col md:max-w-[80vw] max-h-[80vh] md:max-h-full md:justify-end">
+      <h1 class="text-3xl md:text-5xl font-semibold mb-[2vh]">
+        Randomized
+      </h1>
+      <div
+        class="grid grid-cols-none grid-rows-6 md:grid-rows-1 md:grid-cols-12 max-h-[71vh] md:max-h-full h-full gap-[2vh] md:gap-[1.5vw]">
+        {% if decisions %}
+          <div
+            class="items px-[5vw] md:px-0 w-full row-span-5 md:row-span-1 md:col-span-10 rounded-[4vh] pb-[1vh] overflow-y-scroll md:overflow-x-scroll flex md:flex-row flex-col place-self-center gap-[1vw] h-full">  
+            {% for decision in decisions %}
+              <a href="{% url 'quick-decision' decision.id %}" class="w-full">
+                <div
+                  class="decision flex flex-col md:p-[3vh] lg:p-[2vh] md:items-center text-2xl md:text-4xl lg:text-[3rem] md:leading-snug lg:leading-tight font-semibold rounded-[3vh] md:rounded-[4vh] flex-1 md:min-h-full min-h-[13vh] max-h-[15vh] w-full md:min-w-[30vw] md:max-w-[35vw] lg:min-w-[25vw] lg:max-w-[28vw]">
+                  <div class="flex-1 px-[4vh] flex items-center">
+                    What should I eat today?
+                  </div>
+                </div>
+              </a>
+            {% endfor %}
+          {% endif %}
+          
+        </div><div
+            class="bg-white text-black row-span-1 md:col-span-2 font-semibold rounded-[3vh] p-[2vh] md:p-[3vh] lg:p-[5vh] flex items-center justify-center text-2xl md:text-3xl lg:text-[2.1rem] font-medium">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="h-[6vh] md:h-[9vh]">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v12m6-6H6" />
+            </svg>
+          </div>
+      </div>
+    </div>
+    
+  {% endblock main %}

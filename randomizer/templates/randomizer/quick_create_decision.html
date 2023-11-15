@@ -2,63 +2,78 @@
 
 {% block main %}
 
-<form method="POST" action="">
-  <div class="flex w-full h-full flex-col overflow-scroll">
-    <div class="space-y-[6vh] w-full mt-[25vh] flex-1">
-      <div class="text-lg sm:text-2xl text-center text-white">
-        What is your decision all about?
-      </div>
-      <div class="w-full flex justify-center">
-        <div class="flex-1 max-w-[80vw]">
-            
-          {% csrf_token %}
-          <input
-            id="new-decision"  type="text" name="title" maxlength="50" required_id="id_title" class="text-3xl lg:text-6xl rounded-[3vh] lg:rounded-[4vh] w-full bg-black border-neutral-400 focus:border-white outline-none p-5 sm:p-10 border-4 font-black text-white" />
-        </div>
-      </div>
-    </div>
-    
-    <div
-      class="text-white justify-center my-[10vh] flex flex-row gap-4"
-    >
-    
-      <a href="{% url 'home' %}" class="flex justify-center items-center">
-        <div
-          class="bg-neutral-800 flex justify-center items-center text-white rounded-[3vh] h-[12vh] aspect-square cancel-button"
-        >
+<div class="lg:w-[98vw] lg:h-[96vh] lg:rounded-[4vh] p-[6px]">
+  <form method="POST" action="">
+    <div class="flex w-full h-full flex-col">
+      <a href="{% url 'home' %}"> 
+      <div
+          class="place-self-start m-[4%] text-lg max-w-[5vw] uppercase text-white z-10 absolute font-medium">
           <svg
             xmlns="http://www.w3.org/2000/svg"
+            fill="none"
             viewBox="0 0 24 24"
-            fill="currentColor"
-            class="w-[50%] max-w-[5vw] stroke-1 stroke-white"
-          >
+            stroke-width="2"
+            stroke="white"
+            class="w-[7vh] m-2">
             <path
-              fill-rule="evenodd"
-              d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z"
-              clip-rule="evenodd"
-            />
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 19.5L8.25 12l7.5-7.5" />
           </svg>
+        </div></a>
+      <div class="space-y-[6vh] w-full mt-[25vh] flex-1">
+        <div class="text-lg sm:text-3xl text-center text-white">
+          What is your decision all about?
         </div>
-      </a>
-      <button type="submit"
-        class="bg-neutral-800 flex justify-center items-center text-white rounded-[3vh] h-[12vh] aspect-square save-button"
+        <div class="w-full flex justify-center">
+          <div class="flex-1 max-w-[80vw]">
+              
+            {% csrf_token %}
+            <input
+              id="new-decision"  type="text" name="title" maxlength="50" required_id="id_title" class="text-3xl lg:text-5xl rounded-[3vh] lg:rounded-[4vh] w-full bg-black border-neutral-400 focus:border-white outline-none p-[3vh] border-4 font-black text-white" />
+          </div>
+        </div>
+      </div>
+      
+      <div
+        class="text-white flex justify-center mb-[20vh] mt-[5vh] flex flex-row gap-4"
       >
-        <svg
+      
+        <div class="flex justify-center items-center">
+          <div
+            class="bg-neutral-800 flex justify-center items-center text-white rounded-[3vh] h-[12vh] aspect-square"
+          >
+          <svg
           xmlns="http://www.w3.org/2000/svg"
+          fill="none"
           viewBox="0 0 24 24"
-          fill="currentColor"
-          class="w-[50%] max-w-[5vw] stroke-1 stroke-white"
-        >
+          stroke="currentColor"
+          class="w-[45%] max-w-[5vw] stroke-2 stroke-white">
           <path
-            fill-rule="evenodd"
-            d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
-            clip-rule="evenodd"
-          />
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
         </svg>
-      </button>
+          </div>
+        </div>
+        <button type="submit"
+          class="bg-neutral-800 flex justify-center items-center text-white rounded-[3vh] h-[12vh] aspect-square save-button"
+        >
+        <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        class="w-[50%] max-w-[5vw] stroke-1 stroke-white">
+        <path
+          fill-rule="evenodd"
+          d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z"
+          clip-rule="evenodd" />
+      </svg>
+        </button>
+      </div>
     </div>
-  </div>
-</form>
+  </form>
+</div>
 
 <script>
   const input = document.querySelector('#new-decision');

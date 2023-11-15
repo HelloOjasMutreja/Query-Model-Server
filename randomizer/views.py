@@ -180,6 +180,13 @@ def updateQuickDecision(request, pk):
     return render(request, 'randomizer/quick_update_decision.html', context)
 # end def
 
+def savedDecisions(request):
+    decisions = Decision.objects.filter(is_quick_decision=True, user=request.user)
+
+    context = {'decisions': decisions}
+    return render(request, 'randomizer/saved.html', context)
+# end def
+
 def publicDecision(request, pk):
     decision = Decision.objects.get(id=pk)
     image_set = decision.image_set
@@ -256,8 +263,9 @@ def updatePublicDecision(request, pk):
         return redirect('home')
 
     form = None  # Initialize form to None
+    next_step = '1'  # Define a default value for next_step
 
-    if request.method == 'POST':
+    if request.method == 'POST': 
         current_step = request.POST.get('step', '1')
         next_step = current_step  # Initialize next_step with the current step
 
@@ -267,6 +275,13 @@ def updatePublicDecision(request, pk):
                 decision.title = form.cleaned_data['title']
                 decision.categories.set(form.cleaned_data['categories'])
                 decision.save()
+
+                # Extract tags from the updated title and associate them with the decision
+                tags = extract_tags_from_title(decision.title)
+                decision.tags.clear()  # Remove existing tags
+                for tag_name in tags:
+                    tag, created = Tag.objects.get_or_create(name=tag_name)
+                    decision.tags.add(tag)
 
                 # Proceed to the next step
                 next_step = '2'
@@ -299,16 +314,41 @@ def updatePublicDecision(request, pk):
                         content=capitalize_transform_text(request.POST.get('content')),
                     )
             elif 'back' in request.POST:
-                # Go back to step 2
                 next_step = '2'
-                form = OverviewForm(initial={'overview': decision.overview})  # Pass initial data for the form
-            elif 'submit_form' in request.POST:
+                form = OverviewForm(initial={'overview': decision.overview})
+            elif 'advance' in request.POST:
+                next_step = '4'
+                form = AdditionalFieldsForm(initial={
+                    'situation': decision.situation,
+                    'contributor_message': decision.contributor_message,
+                    'tags': ', '.join(decision.tags.values_list('name', flat=True)),
+                })
+
+        # Add the step 4 logic
+        if current_step == '4':
+            form = AdditionalFieldsForm(request.POST)
+            if 'back' in request.POST:
+                # Go back to step 3
+                next_step = '3'
+            elif form.is_valid():
+                decision.situation = form.cleaned_data['situation']
+                decision.contributor_message = form.cleaned_data['contributor_message']
+
+                # Extract and associate tags with the decision
+                tags_input = form.cleaned_data['tags']
+                tags = Tag.objects.filter(name__in=tags_input)
+                decision.tags.set(tags)
+
+                decision.save()
                 messages.success(request, 'Form submitted successfully!')
                 return redirect('public-decision', pk=decision.id)
             else:
-                # Default to step 1 if next_step is not defined
-                next_step = '1'
-                form = TitleCategoryForm(initial={'title': decision.title, 'categories': decision.categories.all()})  # Pass initial data for the form
+                next_step = '4'
+
+        # Check if the 'current_step' is in the session
+        if 'current_step' in request.session:
+            next_step = request.session['current_step']
+            del request.session['current_step']
 
     else:
         form_data = {
@@ -316,13 +356,6 @@ def updatePublicDecision(request, pk):
             'categories': decision.categories.first().id if decision.categories.exists() else None,
         }
         form = TitleCategoryForm(initial=form_data)
-
-        # Check if the 'current_step' is in the session
-        if 'current_step' in request.session:
-            next_step = request.session['current_step']
-            del request.session['current_step']  # Remove the 'current_step' from the session
-        else:
-            next_step = '1'
 
     context = {'form': form, 'decision': decision, 'step': next_step, 'options': options, 'categories': categories}
     return render(request, 'randomizer/public_update_decision.html', context)
@@ -356,7 +389,7 @@ def deleteOption(request, pk):
         request.session['current_step'] = '3'  # Set the current step to '3' in the session
         return redirect(updatePublicDecision, pk=decision.id)
     else:
-        return redirect(quickDecision, pk=decision.id)  
+        return redirect(quickDecision, pk=decision.id) 
 # end def
 
 def mega_random(objects):
@@ -423,8 +456,8 @@ def unset_daily_decision(request, pk):
     return redirect('decision', pk=decision.id)
 # end def
 
-def assist_form(request, decision_id):
-    decision = Decision.objects.get(id=decision_id)
+def assist_form(request, pk):
+    decision = Decision.objects.get(id=pk)
     options = Option.objects.filter(decision=decision)
 
     if request.method == 'POST':
@@ -437,7 +470,7 @@ def assist_form(request, decision_id):
 
         assisted_by = request.user if request.user.is_authenticated else None
 
-        if option_id is None:
+        if option_id == '':
             option = None
         else:
             option = Option.objects.get(id=option_id)
@@ -469,13 +502,13 @@ def assist_form(request, decision_id):
         else:
             messages.success(request, 'Assist created successfully.')
 
-        return redirect(publicDecision, pk=decision_id)
+        return redirect(publicDecision, pk=pk)
 
     context = {'decision': decision, 'options': options}
     return render(request, 'randomizer/assist_form.html', context)
 # end def
 
-@login_required
+@login_required(login_url='login')
 def upvoteAssist(request, assist_id):
     assist = get_object_or_404(Assist, pk=assist_id)
     
@@ -493,7 +526,7 @@ def upvoteAssist(request, assist_id):
             else:
                 messages.error(request, 'You have already upvoted this assist.')
     
-    return redirect(publicDecision, pk=assist.decision_id)
+    return redirect(publicDecision, pk=assist.pk)
 # end def
 
 def filter_option_messages(request, pk, option_id):

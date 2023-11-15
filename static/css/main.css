@@ -10,7 +10,7 @@ textarea {
   font-family: "Plus Jakarta Sans";
 }
 ::-webkit-scrollbar {
-  width: 1vw;
+  width: 0.1vw;
 }
 @media (max-width: 767px) {
   ::-webkit-scrollbar {
@@ -25,23 +25,84 @@ textarea {
   background-color: rgb(49, 49, 49);
 }
 
-.post {
-  color: #ffc9c9;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.25)),
-    url("https://images.unsplash.com/photo-1668279176630-2ee3be57b6ed?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80");
+::selection {
+  background-color: #2cff92;
+  color: #05160e;
+}
 
+.decision {
+  background: url("https://images.unsplash.com/photo-1685777160346-6d1da0d6b428?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80");
+  color: #d8f1ff;
   background-size: cover;
   background-position: center;
 }
-.post > * {
-  color: rgb(255, 197, 197);
+.decision:hover > .on-hover-line {
+  opacity: 100%;
+  transition: opacity 0.1s ease-in;
 }
-.post > :nth-child(2) > * {
-  background-color: rgb(103, 58, 58);
+.container-box {
+  background-color: black;
+  overflow: hidden;
 }
 
-.tag {
-  background-color: rgb(77, 77, 77);
+.column-box {
+  background-image: url("https://images.unsplash.com/photo-1575141251061-c8259641ed63?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80");
+  background-position: center center;
+  background-size: cover;
+  overflow: hidden;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
+}
+
+.column-box .column-text {
+  position: relative;
+}
+.column-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.daily-decisions,
+.another-decision {
+  background-color: #165452;
+}
+
+.choose-option {
+  background-color: #853939;
+}
+.edit-button,
+.settings-button,
+.option {
+  background-color: #05160e;
+  color: #c7ffe2;
+}
+.navbar {
+  border-radius: 3vh;
+  border-width: 2px;
+  border-color: white;
+}
+
+.navbar-links p {
+  padding-left: 20px;
+}
+
+.logo {
+  height: 35px;
+  width: 35px;
+  margin-right: 10px;
+  border-radius: 3vh;
+}
+
+.new-decision,
+.profile,
+.save-decision {
+  border-radius: 1.5vh;
 }
 
 .column-box {
@@ -50,7 +111,7 @@ textarea {
       rgba(0, 0, 0, 0.6),
       rgba(0, 0, 0, 0.3)
     ),
-    url("https://images.unsplash.com/photo-1688261433834-8ae224ef3416?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80");
+    url("https://images.unsplash.com/photo-1685866865968-3b4b53b88027?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=435&q=80");
   background-size: cover;
   background-position: center;
 }
@@ -60,42 +121,15 @@ textarea {
 }
 .assist-button {
   color: rgb(36, 59, 53);
-  background-color: rgb(255, 207, 124);
-}
-.option {
-  background-color: rgb(59, 58, 36);
+  background-color: rgb(255, 201, 109);
 }
 .assist {
   background-color: rgb(59, 58, 36);
+  border-radius: 4vh;
+  border-top-left-radius: 0;
 }
-
-select {
-  background-image: url("");
-}
-.optional-header {
-  cursor: pointer;
-  padding: 18px;
-  width: 100%;
-  text-align: left;
-  border: none;
-  outline: none;
-  transition: 0.4s;
-  color: #c4c4c4;
-}
-.active {
-  color: #ffffff;
-}
-
-/* Style the optional-header expanded. Note: hidden by default */
-.expanded {
-  padding: 0 18px;
-  display: none;
-  overflow: hidden;
-}
-
-.decision {
-  background: url("https://images.unsplash.com/photo-1685777160346-6d1da0d6b428?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=387&q=80");
-  color: #d8f1ff;
+.profile-pic {
+  background-image: url("https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=876&q=80");
   background-size: cover;
   background-position: center;
 }
@@ -117,6 +151,10 @@ input[type="checkbox"]:checked {
   -webkit-appearance: auto;
 }
 
-.expanded > textarea:focus {
-  outline: none;
+.auth-background {
+  background-color: black;
+  background-image: url("https://raw.githubusercontent.com/devDivij/decision-website-v2-frontend/main/background-2.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

@@ -4,55 +4,186 @@
 
 {% block main %}
 
-<div class="bg-gray-900 text-white p-6">
-  <form method="post">
-    {% csrf_token %}
-    
-    <!-- Hidden field to store the decision ID -->
-    <input type="hidden" name="decision_id" value="{{ decision.id }}">
-    
-    <!-- Option field -->
-    <div class="mb-4">
-      <label for="option" class="block text-sm font-medium">Option:</label>
-      <select name="option" id="option" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white">
-        {% for option in options %}
-          <option value="{{ option.id }}">{{ option.content }}</option>
-        {% endfor %}
-      </select>
-    </div>
+<div class="flex items-center justify-center w-full h-full gap-[2vh]">
+  <div
+    class="flex-1 lg:mx-[15vw] my-[10vh] text-white flex flex-col items-center">
+    <form method="post" action="" class="w-full lg:w-max">
 
-    <!-- Anonymity field -->
-    <div class="mb-4 form-check">
-      <input class="form-check-input" type="checkbox" id="anonymousCheckbox" name="anonymous" value="true">
-      <label class="form-check-label" for="anonymousCheckbox">Assist anonymously</label>
-    </div>
-    
-    <!-- Message field -->
-    <div class="mb-4">
-      <label for="message" class="block text-sm font-medium">Message:</label>
-      <textarea name="message" id="message" rows="4" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white"></textarea>
-    </div>
-    
-    <!-- Caution field -->
-    <div class="mb-4">
-      <label for="caution" class="block text-sm font-medium">Caution:</label>
-      <textarea name="caution" id="caution" rows="4" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white"></textarea>
-    </div>
-    
-    <!-- Pros field -->
-    <div class="mb-4">
-      <label for="pros" class="block text-sm font-medium">Pros:</label>
-      <textarea name="pros" id="pros" rows="4" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white"></textarea>
-    </div>
-    
-    <!-- Cons field -->
-    <div class="mb-4">
-      <label for="cons" class="block text-sm font-medium">Cons:</label>
-      <textarea name="cons" id="cons" rows="4" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-800 text-white"></textarea>
-    </div>
-    
-    <button type="submit" class="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-600">Submit</button>
-  </form>
+      {% csrf_token %}
+
+      <div
+        class="flex flex-col gap-[10vh] overflow-y-scroll h-[60vh] pl-[1vw] w-full min-w-[40vw] max-h-[60vh]">
+        <div
+          class="question flex-1 lg:w-[50vw] flex flex-col gap-[2vh] mx-[1vh]">
+          
+          <div id="basicFields">
+            <h1 class="text-4xl lg:text-5xl font-semibold py-[1vh]">Assist</h1>
+            <div class="question flex flex-col gap-[2vh]">
+              <p class="text-xl lg:text-2xl font-medium">
+                Select the choice you support.
+              </p>
+              <select
+                class="bg-neutral-800 rounded-[3vh] h-[12vh] w-full text-xl p-[2vh]" name="option">
+                <option value="">Select an option</option>
+                {% for option in options %}
+                    <option value="{{ option.id }}">{{ option.content }}</option>
+                {% endfor %}
+            </div>
+            <div class="question flex flex-col gap-[2vh] mx-[1vh]">
+              <p class="text-4xl lg:text-5xl font-medium">Message</p>
+              <textarea name="message" placeholder="Message" id="new-select-input"
+                class="w-full lg:w-[50vw] bg-neutral-800 h-[20vh] rounded-[3vh] text-xl p-[3vh] md:p-[5vh]"></textarea>
+            </div>
+          </div>
+          
+          <div id="advancedFields" style="display: none;">
+            <h1 class="text-4xl lg:text-5xl font-semibold py-[2vh]">Advanced Assist</h1>
+            <div class="bg-neutral-800 rounded-[3vh] flex flex-col m-[1vh]">
+              <button
+                class="optional-header flex items-center font-semibold text-xl lg:text-2xl mx-[1vh] w-full"
+                onclick="event.preventDefault()">
+                <div class="flex-1">Caution</div>
+                <div class="m-[0.75vh]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="h-[4vh]">
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+              <div class="expanded">
+                <textarea name="caution" placeholder="Caution"
+                  class="w-full bg-neutral-800 h-[30vh] rounded-[3vh] text-xl lg:text-2xl p-[1vh]"></textarea>
+              </div>
+            </div>
+            <div class="bg-neutral-800 rounded-[3vh] flex flex-col m-[1vh]">
+              <button
+                class="optional-header flex items-center font-semibold text-xl lg:text-2xl mx-[1vh] w-full"
+                onclick="event.preventDefault()">
+                <div class="flex-1">Pros</div>
+                <div class="m-[0.75vh]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="h-[4vh]">
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+              <div class="expanded">
+                <textarea name="pros" placeholder="Pros"
+                  class="w-full bg-neutral-800 h-[30vh] rounded-[3vh] text-xl lg:text-2xl p-[1vh]"></textarea>
+              </div>
+            </div>
+            <div class="bg-neutral-800 rounded-[3vh] flex flex-col m-[1vh]">
+              <button
+                class="optional-header flex items-center font-semibold text-xl lg:text-2xl mx-[1vh] w-full"
+                onclick="event.preventDefault()">
+                <div class="flex-1">Cons</div>
+                <div class="m-[0.75vh]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="h-[4vh]">
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                      clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </button>
+              <div class="expanded">
+                <textarea name="cons" placeholder="Cons"
+                  class="w-full bg-neutral-800 h-[30vh] rounded-[3vh] text-xl lg:text-2xl p-[1vh]"></textarea>
+              </div>
+            </div>
+            <label>
+              <input type="checkbox" name="anonymous">
+                Anonymous
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="buttons flex justify-center gap-[2vh] w-full h-full">
+        <button type="button"
+          class="backward flex items-center bg-neutral-800 w-2/5 h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] text-xl sm:text-2xl font-semibold p-[4vh]">
+          <div class="">
+            <!-- svg -->
+          </div>
+          <div class="flex-1 flex justify-center"  id="advanceAssistButton">Advanced</div>
+        </button>
+        <button type="submit"
+          class="forward flex items-center w-2/5 bg-white h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] text-black text-xl sm:text-2xl font-semibold p-[4vh]">
+          <div class="flex-1 flex justify-center">Submit</div>
+          <div class="">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="hidden md:block md:h-[5vh]">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </div>
+        </button>
+      </div>
+
+    </form>
+  </div>
 </div>
+
+<script>
+  const advanceAssistButton = document.getElementById('advanceAssistButton');
+  const advancedFields = document.getElementById('advancedFields');
+  const basicFields = document.getElementById('basicFields');
+  let isAdvancedMode = false;
+  
+  advanceAssistButton.addEventListener('click', () => {
+      isAdvancedMode = !isAdvancedMode;
+      advancedFields.style.display = isAdvancedMode ? 'block' : 'none';
+      basicFields.style.display = isAdvancedMode ? 'none' : 'block';
+      advanceAssistButton.textContent = isAdvancedMode ? 'Basic' : 'Advanced';
+  });
+  
+  var acc = document.getElementsByClassName("optional-header");
+  var i;
+
+  for (i = 0; i < acc.length; i++) {
+    acc[i].addEventListener("click", function () {
+      /* Toggle between adding and removing the "active" class,
+to highlight the button that controls the expanded */
+      this.classList.toggle("active");
+
+      /* Toggle between hiding and showing the active expanded */
+      var expanded = this.nextElementSibling;
+      if (expanded.style.display === "block") {
+        expanded.style.display = "none";
+        acc.style.color = "#ffffff";
+      } else {
+        expanded.style.display = "block";
+        acc.style.color = "#ffffff";
+      }
+    });
+  }
+  
+  const input = document.querySelector('#new-select-input');
+  input.focus();
+  input.select();
+</script>
 
 {% endblock main %}

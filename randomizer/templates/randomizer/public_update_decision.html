@@ -1,5 +1,10 @@
 {% extends 'main.html' %} {% load static %} {% load compress %} 
 {% block main %}
+<style>
+  ::-webkit-scrollbar {
+    width: 1vh !important;
+  }
+</style>
   <div class="flex items-center justify-center w-full h-full gap-[2vh]">
     <div
       class="flex-1 lg:mx-[15vw] my-[10vh] text-white flex flex-col items-center">
@@ -16,7 +21,6 @@
             <p class="text-2xl lg:text-3xl font-medium">Decision Title</p>
             <input
               type="text"
-              id="id_title"
               name="title"
               value="{{ form.title.value }}"
               class="w-full bg-neutral-800 h-[12vh] rounded-[3vh] text-4xl px-[3.5vh]" />
@@ -39,7 +43,7 @@
         <div class="buttons flex justify-center gap-[1vh] w-full h-full">
           <button
             type="submit"
-            class="forward flex items-center justify-center text-black w-3/5 bg-white h-full rounded-[3vh] mt-[5vh] text-2xl font-semibold p-[4vh]">
+            class="forward flex items-center justify-center text-black w-3/5 bg-white h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] text-2xl font-semibold p-[4vh]">
             <div class="flex-1 flex justify-center">Forward</div>
             <div class="">
               <svg
@@ -66,8 +70,8 @@
           <div class="question flex flex-col gap-[2vh] mx-[1vh]">
             <p class="text-2xl lg:text-3xl font-medium">Overview</p>
             <textarea
-              class="w-full lg:w-[50vw] bg-neutral-800 h-[40vh] rounded-[3vh] text-3xl p-[5vh]"
-              id="id_overview"
+              class="w-full lg:w-[50vw] bg-neutral-800 h-[40vh] rounded-[3vh] text-3xl p-[3vh]"
+              id="id_overview focus"
               name="overview">
               {{ form.overview.value }}
             </textarea>
@@ -77,7 +81,7 @@
         <div class="buttons flex justify-center gap-[2vh] w-full h-full">
           <button
             name="back"
-            class="backward flex items-center bg-neutral-800 w-2/5 h-full rounded-[3vh] mt-[5vh] text-2xl font-semibold p-[4vh]">
+            class="backward flex items-center bg-neutral-800 w-2/5 h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] text-xl sm:text-2xl font-semibold p-[4vh]">
             <div class="">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -96,7 +100,7 @@
           </button>
           <button
             type="submit"
-            class="forward flex items-center w-2/5 bg-white h-full rounded-[3vh] mt-[5vh] text-black text-2xl font-semibold p-[4vh]">
+            class="forward flex items-center w-2/5 bg-white h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] text-black text-xl sm:text-2xl font-semibold p-[4vh]">
             <div class="flex-1 flex justify-center">Forward</div>
             <div class="">
               <svg
@@ -120,8 +124,9 @@
         <div
           class="flex flex-col gap-[10vh] overflow-x-hidden overflow-y-scroll h-[60vh] pl-[1vw] w-full min-w-[40vw] max-h-[60vh]">
           <div class="question flex flex-col gap-[2vh] mx-[1vh]">
-            <p class="text-2xl lg:text-3xl font-medium">Choices</p>
-
+            <div class="flex">
+            <span class="text-2xl lg:text-3xl font-medium flex-1">Choices</span>
+          </div>
             {% if options %}
             <!-- Display the added options -->
             <div
@@ -155,7 +160,7 @@
             class="bg-neutral-800 min-h-[11vh] rounded-[3vh] lg:min-w-[50vw] flex items-center font-semibold text-2xl pl-[4vh] bg-neutral-800 text-white border-4">
             <input
               type="text"
-              id="id_content"
+              id="focus"
               name="content"
               value="{{ form.content.value }}"
               class="pl-0 flex w-full items-center lg:items-end bg-neutral-800 font-semibold text-2xl text-white outline-none"
@@ -184,7 +189,7 @@
             <button
               type="submit"
               name="back"
-              class="backward flex items-center bg-neutral-800 w-2/5 h-full rounded-[3vh] mt-[5vh] font-semibold text-xl sm:text-2xl p-[4vh]">
+              class="backward flex items-center bg-neutral-800 w-2/5 h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] font-semibold text-xl sm:text-2xl p-[4vh]">
               <div class="">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -202,11 +207,140 @@
               <div class="flex-1 flex justify-center">Backward</div>
             </button>
 
+            <!-- Forward to step 4 button -->
+            <button
+            type="submit"
+            name="advance"
+            class="forward flex items-center w-2/5 bg-white h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] text-black text-xl sm:text-2xl font-semibold p-[4vh]">
+            <div class="flex-1 flex justify-center">Forward</div>
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="hidden md:block md:h-[5vh]">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </div>
+          </button>
+          </div>
+
+          {% elif step == '4' %}
+
+          <div
+            class="flex flex-col gap-[10vh] overflow-y-scroll h-[60vh] pl-[1vw] w-full min-w-[40vw] max-h-[60vh]">
+            <div
+              class="question flex-1 lg:w-[50vw] flex flex-col gap-[2vh] mx-[1vh]">
+              <h1 class="text-4xl lg:text-5xl font-semibold py-[1vh]">Optionals</h1>
+              <div class="bg-neutral-800 rounded-[3vh] flex flex-col">
+                <button
+                  class="optional-header flex items-center font-semibold text-2xl lg:text-3xl mx-[1vh] w-full"
+                  onclick="event.preventDefault()">
+                  <div class="flex-1">Situation</div>
+                  <div class="m-[1vh]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="h-[6vh]">
+                      <path
+                        fill-rule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </button>
+                <div class="expanded">
+                  <textarea name="situation" placeholder="Describe the situation" id="id_situation"
+                    class="w-full bg-neutral-800 h-[30vh] rounded-[3vh] text-xl lg:text-2xl p-[1vh]">{{ form.situation.value }}</textarea>
+                </div>
+              </div>
+              <div class="bg-neutral-800 rounded-[3vh] flex flex-col">
+                <button
+                  class="optional-header flex items-center font-semibold text-2xl lg:text-3xl mx-[1vh] w-full"
+                  onclick="event.preventDefault()">
+                  <div class="flex-1">Word of Gratitude</div>
+                  <div class="m-[1vh]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="h-[6vh]">
+                      <path
+                        fill-rule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </button>
+                <div class="expanded">
+                  <textarea name="contributor_message" placeholder="Thanks a lot for your assist!" id="id_contriutor_message"
+                    class="w-full bg-neutral-800 h-[30vh] rounded-[3vh] text-xl lg:text-2xl p-[1vh]">{{ form.contributor_message.value }}</textarea>
+                </div>
+              </div>
+              <div class="bg-neutral-800 rounded-[3vh] flex flex-col">
+                <button
+                  class="optional-header flex items-center font-semibold text-2xl lg:text-3xl mx-[1vh] w-full"
+                  onclick="event.preventDefault()">
+                  <div class="flex-1">
+                    Tags
+                    <p class="inline text-lg">(AI generated by default)</p>
+                  </div>
+                  <div class="m-[1vh]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="h-[6vh]">
+                      <path
+                        fill-rule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 9a.75.75 0 00-1.5 0v2.25H9a.75.75 0 000 1.5h2.25V15a.75.75 0 001.5 0v-2.25H15a.75.75 0 000-1.5h-2.25V9z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                </button>
+                <div class="expanded">
+                  <textarea name="tags" placeholder="Give in the tags" id="id_tags"
+                    class="w-full bg-neutral-800 h-[30vh] rounded-[3vh] text-xl lg:text-2xl p-[1vh]">{{ form.tags.value }}</textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          
+          <div class="buttons flex justify-center gap-[2vh] w-full h-full">
+            <!-- Back to Step 3 button -->
+            <button
+              type="submit"
+              name="back"
+              class="backward flex items-center bg-neutral-800 w-2/5 h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] font-semibold text-xl sm:text-2xl p-[4vh]">
+              <div class="">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="hidden md:block md:h-[5vh]">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+              </div>
+              <div class="flex-1 flex justify-center">Backward</div>
+            </button>
+            
             <!-- Final submit button -->
             <button
               type="submit"
               name="submit_form"
-              class="forward flex items-center w-2/5 bg-white h-full rounded-[3vh] mt-[5vh] text-black text-xl sm:text-2xl font-bold p-[4vh]">
+              class="forward flex items-center w-2/5 bg-white h-full rounded-[2vh] md:rounded-[3vh] mt-[5vh] text-black text-xl sm:text-2xl font-bold p-[4vh]">
               <div class="flex-1 flex justify-center">Publish</div>
               <div class="">
                 <svg
@@ -224,8 +358,38 @@
               </div>
             </button>
           </div>
-          {% endif %}
+
+        {% endif %}
       </form>
     </div>
   </div>
+
+  <script>
+    const input = document.querySelector('#focus');
+    input.focus();
+    input.select();
+  </script>
+  <script>
+    var acc = document.getElementsByClassName("optional-header");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+      acc[i].addEventListener("click", function () {
+        /* Toggle between adding and removing the "active" class,
+        to highlight the button that controls the expanded */
+        this.classList.toggle("active");
+
+        /* Toggle between hiding and showing the active expanded */
+        var expanded = this.nextElementSibling;
+        if (expanded.style.display === "block") {
+          expanded.style.display = "none";
+          acc.style.color = "#ffffff";
+        } else {
+          expanded.style.display = "block";
+          acc.style.color = "#ffffff";
+        }
+      });
+    }
+  </script>
+
 {% endblock main %}

@@ -19,13 +19,14 @@ def create_grid(sender, instance, created, **kwargs):
 def userProfile(request, username):
     user = get_object_or_404(CustomUser, username=username)
     content_type = ContentType.objects.get_for_model(user)
-    recent_activity = LogEntry.objects.filter(content_type=content_type, object_id=user.id).order_by('-action_time')[:10]
-    recent_decisions = Decision.objects.filter(user=user).order_by('-updated', '-created')[:5]
-    recent_assists = Assist.objects.filter(assisted_by=user).order_by('-created')[:5]
+    recent_activity = LogEntry.objects.filter(content_type=content_type, object_id=user.id).order_by('-action_time')
+    recent_decisions = Decision.objects.filter(user=user).order_by('-updated', '-created')
+    recent_assists = Assist.objects.filter(assisted_by=user).order_by('-created')
+    assist_count = Assist.objects.filter(assisted_by=user).count()
     upvoted_assists = user.upvoted_assists.all()
     upvote_count = Assist.objects.filter(assisted_by=user).aggregate(total_upvotes=Count('helpfulupvote')).get('total_upvotes', 0)
 
-    tab = request.GET.get('tab', 'decisions')  # Default to 'decisions'
+    tab = request.GET.get('tab', 'decisions')
     
     # Fetch data based on the selected tab
     if tab == 'decisions':
@@ -41,6 +42,7 @@ def userProfile(request, username):
             'user': user,
             'recent_activity': recent_activity,
             'recent_decisions': recent_decisions,
+            'assist_count': assist_count,
             'recent_assists': recent_assists,
             'upvoted_assists': upvoted_assists,
             'upvote_count': upvote_count,

@@ -50,7 +50,7 @@ textarea {
       rgba(0, 0, 0, 0.6),
       rgba(0, 0, 0, 0.3)
     ),
-    url("https://images.unsplash.com/photo-1688261433834-8ae224ef3416?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1171&q=80");
+    url("https://images.unsplash.com/photo-1685866865968-3b4b53b88027?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=435&q=80");
   background-size: cover;
   background-position: center;
 }
@@ -60,13 +60,15 @@ textarea {
 }
 .assist-button {
   color: rgb(36, 59, 53);
-  background-color: rgb(255, 207, 124);
+  background-color: rgb(255, 201, 109);
 }
 .option {
   background-color: rgb(59, 58, 36);
 }
 .assist {
   background-color: rgb(59, 58, 36);
+  border-radius: 4vh;
+  border-top-left-radius: 0;
 }
 
 select {
@@ -124,4 +126,12 @@ input[type="checkbox"]:checked {
 
 .expanded > textarea:focus {
   outline: none;
+}
+
+.auth-background {
+  background-color: black;
+  background-image: url("https://raw.githubusercontent.com/devDivij/decision-website-v2-frontend/main/background-2.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

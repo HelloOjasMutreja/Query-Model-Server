@@ -14,7 +14,7 @@
         
         {% if decisions %}
         <div
-          class="flex flex-col gap-[4vh] md:gap-[7vh] items-center w-full md:w-[55vw] sm:pt-[7.5vh] md:pt-0">
+          class="flex flex-col gap-[4vh] md:gap-[7vh] items-center w-full md:w-[55vw] sm:pt-[7.5vh] md:pt-0 overflow-x-hidden">
 
           {% for decision in decisions %}
             <a href="{% url 'public-decision' decision.id %}" class="w-full">
